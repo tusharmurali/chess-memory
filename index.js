@@ -93,5 +93,7 @@ setTimeout(() => {
 
 const puzzles = 'lichess_db_puzzle.csv';
 $.get(puzzles, csv => {
-    console.log(csv)
+    const data = $.csv.toArrays(csv)
+    const puzzle = data[Math.floor(Math.random() * data.length)]
+    console.log(puzzle)
 })
