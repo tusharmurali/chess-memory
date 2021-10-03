@@ -161,7 +161,7 @@ const memo = localStorage.getItem("memo")
 if (memo)
     $memo.val(memo)
 else
-    $memo.val(3)
+    $memo.val(5)
 $memo.on("input", () => {
     localStorage.setItem("memo", $memo.val())
 })
