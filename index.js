@@ -11,11 +11,8 @@ const squareClass = 'square-55d63'
 const $memo = $('#memo')
 const $giveUp = $('#giveUp')
 const $next = $('#next')
-const $status = $('#status')
-const $ratingLabel = $('#ratingLabel')
-const $rating = $('#rating')
-const $fenLabel = $('#fenLabel')
-const $fen = $('#fen')
+const $correct = $('#correct')
+const $incorrect = $('#incorrect')
 const $pgn = $('#pgn')
 
 function onDragStart (source, piece) {
@@ -59,10 +56,7 @@ function onDrop (source, target) {
         showSolution()
 
         $giveUp.hide()
-        $ratingLabel.show()
-        $rating.show()
-        $fenLabel.show()
-        $fen.show()
+        $incorrect.show()
         $next.show()
 
         return 'snapback'
@@ -82,10 +76,7 @@ function onSnapEnd () {
             position: game.fen()
         })
         $giveUp.hide()
-        $ratingLabel.show()
-        $rating.show()
-        $fenLabel.show()
-        $fen.show()
+        $correct.show()
         $next.show()
         return
     }
@@ -104,34 +95,6 @@ function onSnapEnd () {
 }
 
 function updateStatus () {
-    let status
-
-    let moveColor = 'White';
-    if (game.turn() === 'b') {
-        moveColor = 'Black'
-    }
-
-    // checkmate?
-    if (game.in_checkmate()) {
-        status = 'Game over, ' + moveColor + ' is in checkmate.'
-    }
-
-    // draw?
-    else if (game.in_draw()) {
-        status = 'Game over, drawn position'
-    }
-
-    // game still on
-    else {
-        status = moveColor + ' to move'
-
-        // check?
-        if (game.in_check()) {
-            status += ', ' + moveColor + ' is in check'
-        }
-    }
-
-    $status.html(status)
     $pgn.html(game.pgn().split("\n").splice(3))
 }
 
@@ -145,7 +108,6 @@ function getPuzzle() {
         game.load(puzzle[1])
         moves = puzzle[2].split(" ")
         orientation = game.turn() === 'b' ? 'white' : 'black'
-        $rating.html(puzzle[3])
 
         board = Chessboard('myBoard', {
             ...config,
@@ -164,7 +126,6 @@ function getPuzzle() {
         $board.find('.square-' + move.to).addClass('highlight-black')
 
         board.position(game.fen())
-        $fen.html(game.fen())
 
         updateStatus()
     })
@@ -216,10 +177,6 @@ $giveUp.click(() => {
         position: game.fen()
     })
     showSolution()
-    $ratingLabel.show()
-    $rating.show()
-    $fenLabel.show()
-    $fen.show()
     $giveUp.hide()
     $next.show()
 })
@@ -227,16 +184,12 @@ $giveUp.click(() => {
 $next.hide()
 $next.click(() => {
     getPuzzle()
-    $ratingLabel.hide()
-    $rating.hide()
-    $fenLabel.hide()
-    $fen.hide()
+    $correct.hide()
+    $incorrect.hide()
     $next.hide()
 })
 
-$fenLabel.hide()
-$fen.hide()
-$ratingLabel.hide()
-$rating.hide()
+$correct.hide()
+$incorrect.hide()
 
 getPuzzle()
