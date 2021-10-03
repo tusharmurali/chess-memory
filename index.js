@@ -84,11 +84,7 @@ function onSnapEnd () {
     // we make the next move in the puzzle
     const move = game.move(moves[counter++], { sloppy : true })
 
-    // highlight opponent's move
-    $board.find('.' + squareClass).removeClass('highlight-black')
-    $board.find('.square-' + move.from).addClass('highlight-black')
-    $board.find('.square-' + move.to).addClass('highlight-black')
-
+    highlightMove(move)
     board.position(game.fen())
 
     updateStatus()
@@ -120,11 +116,7 @@ function getPuzzle() {
         const move = game.move(moves[0], { sloppy: true })
         counter = 1
 
-        // highlight opponent's move
-        $board.find('.' + squareClass).removeClass('highlight-black')
-        $board.find('.square-' + move.from).addClass('highlight-black')
-        $board.find('.square-' + move.to).addClass('highlight-black')
-
+        highlightMove(move)
         board.position(game.fen())
 
         updateStatus()
@@ -151,6 +143,12 @@ function showSolution() {
             updateStatus()
         }, (i - counter + 1) * 1000)
     }
+}
+
+function highlightMove(move) {
+    $board.find('.' + squareClass).removeClass('highlight-black')
+    $board.find('.square-' + move.from).addClass('highlight-black')
+    $board.find('.square-' + move.to).addClass('highlight-black')
 }
 
 const config = {
