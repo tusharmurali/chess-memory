@@ -5,10 +5,15 @@ let puzzle  = null
 let moves  = null
 let orientation = null
 let counter = undefined
+let puzzleHistory = []
 
 const squareClass = 'square-55d63'
 
+const $countdownContainer = $('#countdownContainer')
+$countdownContainer.hide()
+const $countdown = $('#countdown')
 const $loading = $('#loading')
+const $history = $('#history')
 const $memo = $('#memo')
 const $theme = $('#theme')
 const $giveUp = $('#giveUp')
@@ -63,6 +68,8 @@ function onDrop(source, target) {
         $incorrect.show()
         $next.show()
 
+        updateHistory("0")
+
         return 'snapback'
     }
 
@@ -82,6 +89,8 @@ function onSnapEnd() {
         $giveUp.hide()
         $correct.show()
         $next.show()
+
+        updateHistory("1")
         return
     }
 
@@ -105,6 +114,25 @@ function updateStatus(prefix) {
     }
 }
 
+function updateHistory(number) {
+    if (number) {
+        if (puzzleHistory.length > 9) {
+            puzzleHistory.shift()
+            puzzleHistory.push(number)
+        } else {
+            puzzleHistory.push(number)
+        }
+        localStorage.setItem("history", puzzleHistory)
+    }
+    $history.empty()
+    for (let i = 0; i < puzzleHistory.length; i++) {
+        if (puzzleHistory[i] === "0")
+            $history.append('<span class="badge bg-danger mx-1"><i class="bi bi-x"></i></span>')
+        else
+            $history.append('<span class="badge bg-success mx-1"><i class="bi bi-check"></i></span>')
+    }
+}
+
 function getPuzzle() {
     $.get('lichess_db_puzzle.csv', csv => {
         const data = csv.split("\n")
@@ -117,6 +145,8 @@ function getPuzzle() {
         orientation = game.turn() === 'b' ? 'white' : 'black'
 
         $loading.hide()
+        $history.show()
+
         board = Chessboard('myBoard', {
             ...config,
             orientation,
@@ -133,6 +163,10 @@ function getPuzzle() {
 
         updateStatus()
     }).then(() => {
+        $countdownContainer.show()
+        let countdown = $memo.val()
+        $countdown.html(countdown)
+
         // queue remove pieces after memorization time
         setTimeout(() => {
             board = Chessboard('myBoard', {
@@ -144,14 +178,25 @@ function getPuzzle() {
             })
             $giveUp.show()
         }, 1000 * $memo.val())
+
+        const interval = setInterval(() => {
+            if (countdown === 1) {
+                $countdownContainer.hide()
+                $countdown.hide()
+                clearInterval(interval)
+            }
+            $countdown.html(--countdown)
+        }, 1000)
     })
 }
 
 let timeouts = []
 
 function showSolution(movesToNow) {
-    movesToNow = movesToNow.substring(0, movesToNow.lastIndexOf(" "))
-    if (movesToNow.endsWith(".")) movesToNow = movesToNow.substring(0, movesToNow.lastIndexOf(" "))
+    if (movesToNow) {
+        movesToNow = movesToNow.substring(0, movesToNow.lastIndexOf(" "))
+        if (movesToNow.endsWith(".")) movesToNow = movesToNow.substring(0, movesToNow.lastIndexOf(" "))
+    }
     for (let i = counter; i < moves.length; i++) {
         timeouts[i] = setTimeout(() => {
             game.move(moves[i], { sloppy : true })
@@ -197,7 +242,6 @@ if (theme) {
 }
 $theme.on("change", () => {
     config.pieceTheme = `img/chesspieces/${$theme.val()}/{piece}.png`
-    // if not in blindfold mode, then reflect theme change in board
     if ($giveUp.is(":hidden")) {
         board = Chessboard('myBoard', {
             ...config,
@@ -210,6 +254,13 @@ $theme.on("change", () => {
     localStorage.setItem("theme", $theme.val())
 })
 
+$history.hide()
+const history = localStorage.getItem("history")
+if (history) {
+    puzzleHistory = history.split(",")
+    updateHistory()
+}
+
 $giveUp.hide()
 $giveUp.click(() => {
     board = Chessboard('myBoard', {
@@ -218,6 +269,7 @@ $giveUp.click(() => {
         draggable: false,
         position: game.fen()
     })
+    updateHistory("0")
     showSolution()
     $giveUp.hide()
     $next.show()

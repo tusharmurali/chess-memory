@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>ChessMemory</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-icons.css">
     <link rel="stylesheet" href="css/chessboard-1.0.0.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="js/jquery-3.6.0.min.js"></script>
@@ -34,12 +35,24 @@
             <div class="row">
                 <div class="col">
                     <div class="spinner-border text-secondary" id="loading" role="status" style="width: 4rem; height: 4rem;"></div>
-                    <div id="myBoard" class="d-flex justify-content-center" style="width: 400px"></div>
+                    <div id="myBoard" class="d-flex justify-content-center" style="width: 450px"></div>
+                    <div id="history"></div>
                     <div id="pgn"></div>
                 </div>
+                <div class="col align-self-center" id="countdownContainer">
+                    <h1 id="countdown" class="text-white mb-3"></h1>
+                </div>
                 <div class="col align-self-end">
-                    <h3 id="correct" class="text-success mb-3">Correct!</h3>
-                    <h3 id="incorrect" class="text-danger mb-3">Incorrect</h3>
+                    <h3 id="correct" class="text-success mb-3">
+                        <i class="bi bi-check" style="font-size: 50px"></i>
+                        <br>
+                        Correct!
+                    </h3>
+                    <h3 id="incorrect" class="text-danger mb-3">
+                        <i class="bi bi-x" style="font-size: 50px"></i>
+                        <br>
+                        Incorrect
+                    </h3>
                     <button id="giveUp" type="button" class="btn btn-lg btn-secondary fw-bold border-white bg-white">Give Up</button>
                     <button id="next" type="button" class="btn btn-lg btn-secondary fw-bold border-white bg-white">Next</button>
                 </div>
