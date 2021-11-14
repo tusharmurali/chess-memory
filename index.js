@@ -8,6 +8,7 @@ let counter = undefined
 
 const squareClass = 'square-55d63'
 
+const $loading = $('#loading')
 const $memo = $('#memo')
 const $theme = $('#theme')
 const $giveUp = $('#giveUp')
@@ -115,6 +116,7 @@ function getPuzzle() {
         moves = puzzle[2].split(" ")
         orientation = game.turn() === 'b' ? 'white' : 'black'
 
+        $loading.hide()
         board = Chessboard('myBoard', {
             ...config,
             orientation,
@@ -139,27 +141,10 @@ function getPuzzle() {
             orientation,
             draggable: true,
             position: game.fen(),
-            pieceTheme: blindfoldTheme
+            pieceTheme: 'img/chesspieces/blindfold.png'
         })
         $giveUp.show()
     }, 1000 * $memo.val())
-}
-
-function blindfoldTheme(piece) {
-    const toHide = $("input[name='btnradio']:checked").attr("id")
-    if (toHide === "me") {
-        const myTurn = game.turn() === 'b' ? 'b' : 'w'
-        if (piece.search(new RegExp(myTurn)) !== -1)
-            return 'img/chesspieces/blindfold.png'
-        return `img/chesspieces/${$theme.val()}/${piece}.png`
-    } else if (toHide === "opponent") {
-        const opponentTurn = game.turn() === 'b' ? 'w' : 'b'
-        if (piece.search(new RegExp(opponentTurn)) !== -1)
-            return 'img/chesspieces/blindfold.png'
-        return `img/chesspieces/${$theme.val()}/${piece}.png`
-    } else {
-        return 'img/chesspieces/blindfold.png'
-    }
 }
 
 let timeouts = []
@@ -223,15 +208,6 @@ $theme.on("change", () => {
         })
     }
     localStorage.setItem("theme", $theme.val())
-})
-
-const hide = localStorage.getItem("hide")
-if (hide)
-    $(`#${hide}`).click();
-else
-    $("#both").click();
-$("input[name='btnradio']").on("change", () => {
-    localStorage.setItem("hide", $("input[name='btnradio']:checked").attr("id"))
 })
 
 $giveUp.hide()
