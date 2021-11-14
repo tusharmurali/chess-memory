@@ -132,19 +132,19 @@ function getPuzzle() {
         board.position(game.fen())
 
         updateStatus()
+    }).then(() => {
+        // queue remove pieces after memorization time
+        setTimeout(() => {
+            board = Chessboard('myBoard', {
+                ...config,
+                orientation,
+                draggable: true,
+                position: game.fen(),
+                pieceTheme: 'img/chesspieces/blindfold.png'
+            })
+            $giveUp.show()
+        }, 1000 * $memo.val())
     })
-
-    // queue remove pieces after memorization time
-    setTimeout(() => {
-        board = Chessboard('myBoard', {
-            ...config,
-            orientation,
-            draggable: true,
-            position: game.fen(),
-            pieceTheme: 'img/chesspieces/blindfold.png'
-        })
-        $giveUp.show()
-    }, 1000 * $memo.val())
 }
 
 let timeouts = []
