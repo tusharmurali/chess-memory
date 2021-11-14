@@ -9,13 +9,14 @@ let counter = undefined
 const squareClass = 'square-55d63'
 
 const $memo = $('#memo')
+const $theme = $('#theme')
 const $giveUp = $('#giveUp')
 const $next = $('#next')
 const $correct = $('#correct')
 const $incorrect = $('#incorrect')
 const $pgn = $('#pgn')
 
-function onDragStart (source, piece) {
+function onDragStart(source, piece) {
     // do not pick up pieces if the game is over
     if (game.game_over()) return false
 
@@ -26,7 +27,7 @@ function onDragStart (source, piece) {
     }
 }
 
-function onDrop (source, target) {
+function onDrop(source, target) {
     const position = game.fen()
 
     // see if the move is legal
@@ -34,13 +35,15 @@ function onDrop (source, target) {
         from: source,
         to: target,
         promotion: 'q' // NOTE: always promote to a queen for example simplicity
-    });
+    })
 
     // illegal move
     if (move === null) return 'snapback'
 
     // incorrect move
     if (source + target !== moves[counter]) {
+        const movesToNow = game.pgn().split("\n").splice(3)[0]
+
         // display position after incorrect move
         board = Chessboard('myBoard', {
             ...config,
@@ -53,7 +56,7 @@ function onDrop (source, target) {
         board.position(position)
         game.load(position)
 
-        showSolution()
+        showSolution(movesToNow)
 
         $giveUp.hide()
         $incorrect.show()
@@ -67,7 +70,7 @@ function onDrop (source, target) {
 
 // update the board position after the piece snap
 // for castling, en passant, pawn promotion
-function onSnapEnd () {
+function onSnapEnd() {
     if (++counter === moves.length) { // puzzle finished
         board = Chessboard('myBoard', {
             ...config,
@@ -81,7 +84,7 @@ function onSnapEnd () {
         return
     }
 
-    // we make the next move in the puzzle
+    // make the next move in the puzzle
     const move = game.move(moves[counter++], { sloppy : true })
 
     highlightMove(move)
@@ -90,8 +93,15 @@ function onSnapEnd () {
     updateStatus()
 }
 
-function updateStatus () {
-    $pgn.html(game.pgn().split("\n").splice(3))
+function updateStatus(prefix) {
+    if (prefix) {
+        let status = game.pgn().split("\n").splice(3)[0]
+        const dots = status.indexOf("...")
+        if (dots !== -1) status = status.substring(dots + 4)
+        $pgn.html(prefix + " " + status)
+    } else {
+        $pgn.html(game.pgn().split("\n").splice(3)[0])
+    }
 }
 
 function getPuzzle() {
@@ -129,20 +139,46 @@ function getPuzzle() {
             orientation,
             draggable: true,
             position: game.fen(),
-            pieceTheme: 'img/chesspieces/blindfold.png'
+            pieceTheme: blindfoldTheme
         })
         $giveUp.show()
     }, 1000 * $memo.val())
 }
 
-function showSolution() {
+function blindfoldTheme(piece) {
+    const toHide = $("input[name='btnradio']:checked").attr("id")
+    if (toHide === "me") {
+        const myTurn = game.turn() === 'b' ? 'b' : 'w'
+        if (piece.search(new RegExp(myTurn)) !== -1)
+            return 'img/chesspieces/blindfold.png'
+        return `img/chesspieces/${$theme.val()}/${piece}.png`
+    } else if (toHide === "opponent") {
+        const opponentTurn = game.turn() === 'b' ? 'w' : 'b'
+        if (piece.search(new RegExp(opponentTurn)) !== -1)
+            return 'img/chesspieces/blindfold.png'
+        return `img/chesspieces/${$theme.val()}/${piece}.png`
+    } else {
+        return 'img/chesspieces/blindfold.png'
+    }
+}
+
+let timeouts = []
+
+function showSolution(movesToNow) {
+    movesToNow = movesToNow.substring(0, movesToNow.lastIndexOf(" "))
+    if (movesToNow.endsWith(".")) movesToNow = movesToNow.substring(0, movesToNow.lastIndexOf(" "))
     for (let i = counter; i < moves.length; i++) {
-        setTimeout(() => {
+        timeouts[i] = setTimeout(() => {
             game.move(moves[i], { sloppy : true })
             board.position(game.fen())
-            updateStatus()
+            updateStatus(movesToNow)
         }, (i - counter + 1) * 1000)
     }
+}
+
+function clearTimeouts() {
+    for (let i = counter; i < timeouts.length; i++)
+        clearTimeout(timeouts[i])
 }
 
 function highlightMove(move) {
@@ -154,7 +190,7 @@ function highlightMove(move) {
 const config = {
     onDragStart,
     onDrop,
-    onSnapEnd
+    onSnapEnd,
 }
 
 const memo = localStorage.getItem("memo")
@@ -164,6 +200,38 @@ else
     $memo.val(5)
 $memo.on("input", () => {
     localStorage.setItem("memo", $memo.val())
+})
+
+const theme = localStorage.getItem("theme")
+if (theme) {
+    $theme.val(theme)
+    config.pieceTheme = `img/chesspieces/${theme}/{piece}.png`
+} else {
+    $theme.val("wikipedia")
+    config.pieceTheme = `img/chesspieces/wikipedia/{piece}.png`
+}
+$theme.on("change", () => {
+    config.pieceTheme = `img/chesspieces/${$theme.val()}/{piece}.png`
+    // if not in blindfold mode, then reflect theme change in board
+    if ($giveUp.is(":hidden")) {
+        board = Chessboard('myBoard', {
+            ...config,
+            orientation,
+            draggable: false,
+            position: board.fen(),
+            pieceTheme: `img/chesspieces/${$theme.val()}/{piece}.png`
+        })
+    }
+    localStorage.setItem("theme", $theme.val())
+})
+
+const hide = localStorage.getItem("hide")
+if (hide)
+    $(`#${hide}`).click();
+else
+    $("#both").click();
+$("input[name='btnradio']").on("change", () => {
+    localStorage.setItem("hide", $("input[name='btnradio']:checked").attr("id"))
 })
 
 $giveUp.hide()
@@ -182,6 +250,7 @@ $giveUp.click(() => {
 $next.hide()
 $next.click(() => {
     getPuzzle()
+    clearTimeouts()
     $correct.hide()
     $incorrect.hide()
     $next.hide()

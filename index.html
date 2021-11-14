@@ -17,8 +17,24 @@
                 <h3 class="float-md-start mb-0">ChessMemory</h3>
                 <nav class="nav nav-masthead justify-content-center float-md-end">
                     <span>
+                        <div class="btn-group" role="group">
+                          <input type="radio" class="btn-check" name="btnradio" id="both" autocomplete="off" checked>
+                          <label class="btn btn-sm btn-secondary" for="both">Hide both</label>
+                          <input type="radio" class="btn-check" name="btnradio" id="me" autocomplete="off">
+                          <label class="btn btn-sm btn-secondary" for="me">Hide my pieces</label>
+                          <input type="radio" class="btn-check" name="btnradio" id="opponent" autocomplete="off">
+                          <label class="btn btn-sm btn-secondary" for="opponent">Hide opponent's pieces</label>
+                        </div>
+                        <br>
                         <label for="memo">Memorization time (seconds):</label>
                         <input id="memo" type="number" style="max-width: 50px">
+                        <br>
+                        <label for="theme">Piece theme:</label>
+                        <select id="theme">
+                            <option value="wikipedia">Default</option>
+                            <option value="alpha">Alpha</option>
+                            <option value="uscf">USCF</option>
+                        </select>
                     </span>
                 </nav>
             </div>
