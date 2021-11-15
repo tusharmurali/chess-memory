@@ -180,7 +180,7 @@ function getPuzzle() {
         }, 1000 * $memo.val())
 
         const interval = setInterval(() => {
-            if (countdown === 1) {
+            if (countdown <= 1) {
                 $countdownContainer.hide()
                 clearInterval(interval)
             }
