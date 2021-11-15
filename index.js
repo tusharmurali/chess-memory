@@ -183,8 +183,9 @@ function getPuzzle() {
             if (countdown === 1) {
                 $countdownContainer.hide()
                 clearInterval(interval)
+            } else {
+                $countdown.html(--countdown)
             }
-            $countdown.html(--countdown)
         }, 1000)
     })
 }
