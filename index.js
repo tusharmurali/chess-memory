@@ -163,10 +163,6 @@ function getPuzzle() {
 
         updateStatus()
     }).then(() => {
-        $countdownContainer.show()
-        let countdown = $memo.val()
-        $countdown.html(countdown)
-
         // queue remove pieces after memorization time
         setTimeout(() => {
             board = Chessboard('myBoard', {
@@ -179,11 +175,14 @@ function getPuzzle() {
             $giveUp.show()
         }, 1000 * $memo.val())
 
+        $countdownContainer.show()
+
+        let countdown = $memo.val()
+        $countdown.html(countdown)
         const interval = setInterval(() => {
             if (countdown === 1) {
                 $countdownContainer.hide()
                 clearInterval(interval)
-                return
             }
             $countdown.html(--countdown)
         }, 1000)
