@@ -182,7 +182,6 @@ function getPuzzle() {
         const interval = setInterval(() => {
             if (countdown === 1) {
                 $countdownContainer.hide()
-                $countdown.hide()
                 clearInterval(interval)
             }
             $countdown.html(--countdown)
@@ -277,8 +276,8 @@ $giveUp.click(() => {
 
 $next.hide()
 $next.click(() => {
-    getPuzzle()
     clearTimeouts()
+    getPuzzle()
     $correct.hide()
     $incorrect.hide()
     $next.hide()
