@@ -241,7 +241,7 @@ if (theme) {
 }
 $theme.on("change", () => {
     config.pieceTheme = `img/chesspieces/${$theme.val()}/{piece}.png`
-    if ($giveUp.is(":hidden")) {
+    if ($giveUp.is(":hidden") || $next.is(":visible")) {
         board = Chessboard('myBoard', {
             ...config,
             orientation,
