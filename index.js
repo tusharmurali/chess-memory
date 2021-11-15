@@ -12,6 +12,7 @@ const squareClass = 'square-55d63'
 const $countdownContainer = $('#countdownContainer')
 $countdownContainer.hide()
 const $countdown = $('#countdown')
+$countdown.hide()
 const $loading = $('#loading')
 const $history = $('#history')
 const $memo = $('#memo')
@@ -164,6 +165,7 @@ function getPuzzle() {
         updateStatus()
     }).then(() => {
         $countdownContainer.show()
+        $countdown.show()
         let countdown = $memo.val()
         $countdown.html(countdown)
 
@@ -180,8 +182,9 @@ function getPuzzle() {
         }, 1000 * $memo.val())
 
         const interval = setInterval(() => {
-            if (countdown <= 1) {
+            if (countdown === 1) {
                 $countdownContainer.hide()
+                $countdown.hide()
                 clearInterval(interval)
             }
             $countdown.html(--countdown)
