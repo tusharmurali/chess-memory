@@ -179,17 +179,13 @@ function getPuzzle() {
 
         let countdown = $memo.val()
         $countdown.html(countdown)
-        if (countdown === 1) {
-            setTimeout($countdownContainer.hide(), 1000)
-        } else {
-            const interval = setInterval(() => {
-                if (countdown === 1) {
-                    $countdownContainer.hide()
-                    clearInterval(interval)
-                }
-                $countdown.html(--countdown)
-            }, 1000)
-        }
+        const interval = setInterval(() => {
+            if (countdown == 1) {
+                $countdownContainer.hide()
+                clearInterval(interval)
+            }
+            $countdown.html(--countdown)
+        }, 1000)
     })
 }
 
