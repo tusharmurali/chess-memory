@@ -47,7 +47,7 @@ function onDrop(source, target) {
     if (move === null) return 'snapback'
 
     // incorrect move
-    if (!moves[counter].contains(source + target)) {
+    if (!moves[counter].includes(source + target)) {
         const movesToNow = game.pgn().split("\n").splice(3)[0]
 
         // display position after incorrect move
