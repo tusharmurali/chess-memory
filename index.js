@@ -98,6 +98,7 @@ function onSnapEnd() {
 
     // make the next move in the puzzle
     const move = game.move(moves[counter++], { sloppy : true })
+    moveSound.play()
 
     highlightMove(move)
     board.position(game.fen())
