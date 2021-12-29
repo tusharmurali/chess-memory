@@ -7,6 +7,7 @@ let orientation = null
 let counter = undefined
 let puzzleHistory = []
 
+const moveSound = new Audio("move.mp3")
 const squareClass = 'square-55d63'
 
 const $countdownContainer = $('#countdownContainer')
@@ -73,6 +74,7 @@ function onDrop(source, target) {
         return 'snapback'
     }
 
+    moveSound.play()
     updateStatus()
 }
 
@@ -156,6 +158,7 @@ function getPuzzle() {
 
         // make first move of the puzzle
         const move = game.move(moves[0], { sloppy: true })
+        moveSound.play()
         counter = 1
 
         highlightMove(move)
@@ -200,6 +203,7 @@ function showSolution(movesToNow) {
         timeouts[i] = setTimeout(() => {
             game.move(moves[i], { sloppy : true })
             board.position(game.fen())
+            moveSound.play()
             updateStatus(movesToNow)
         }, (i - counter + 1) * 1000)
     }
