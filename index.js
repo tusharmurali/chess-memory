@@ -7,16 +7,18 @@ let orientation = null
 let counter = undefined
 let puzzleHistory = []
 
-const moveSound = new Audio("move.mp3")
+const moveSound = new Audio('move.mp3')
 const squareClass = 'square-55d63'
 
 const $countdownContainer = $('#countdownContainer')
 $countdownContainer.hide()
 const $countdown = $('#countdown')
 const $loading = $('#loading')
+const $loadingText = $('#loadingText')
 const $history = $('#history')
 const $memo = $('#memo')
 const $theme = $('#theme')
+const $rating = $('#rating')
 const $giveUp = $('#giveUp')
 const $next = $('#next')
 const $correct = $('#correct')
@@ -49,7 +51,7 @@ function onDrop(source, target) {
 
     // incorrect move
     if (!moves[counter].includes(source + target) && !game.in_checkmate()) {
-        const movesToNow = game.pgn().split("\n").splice(3)[0]
+        const movesToNow = game.pgn().split('\n').splice(3)[0]
 
         // display position after incorrect move
         board = Chessboard('myBoard', {
@@ -69,7 +71,7 @@ function onDrop(source, target) {
         $incorrect.show()
         $next.show()
 
-        updateHistory("0")
+        updateHistory('0')
 
         return 'snapback'
     }
@@ -92,7 +94,7 @@ function onSnapEnd() {
         $correct.show()
         $next.show()
 
-        updateHistory("1")
+        updateHistory('1')
         return
     }
 
@@ -108,12 +110,12 @@ function onSnapEnd() {
 
 function updateStatus(prefix) {
     if (prefix) {
-        let status = game.pgn().split("\n").splice(3)[0]
-        const dots = status.indexOf("...")
+        let status = game.pgn().split('\n').splice(3)[0]
+        const dots = status.indexOf('...')
         if (dots !== -1) status = status.substring(dots + 4)
-        $pgn.html(prefix + " " + status)
+        $pgn.html(prefix + ' ' + status)
     } else {
-        $pgn.html(game.pgn().split("\n").splice(3)[0])
+        $pgn.html(game.pgn().split('\n').splice(3)[0])
     }
 }
 
@@ -125,29 +127,30 @@ function updateHistory(number) {
         } else {
             puzzleHistory.push(number)
         }
-        localStorage.setItem("history", puzzleHistory)
+        localStorage.setItem('history', puzzleHistory)
     }
     $history.empty()
     for (let i = 0; i < puzzleHistory.length; i++) {
-        if (puzzleHistory[i] === "0")
-            $history.append('<span class="badge bg-danger mx-1"><i class="bi bi-x"></i></span>')
+        if (puzzleHistory[i] === '0')
+            $history.append('<span class="badge bg-danger mx-1"><i class="bi bi-x-lg"></i></span>')
         else
-            $history.append('<span class="badge bg-success mx-1"><i class="bi bi-check"></i></span>')
+            $history.append('<span class="badge bg-success mx-1"><i class="bi bi-check-lg"></i></span>')
     }
 }
 
 function getPuzzle() {
-    $.get('lichess_db_puzzle.csv', csv => {
-        const data = csv.split("\n")
+    $.get('lichess_db_puzzle_' + $rating.val() + '.csv', csv => {
+        const data = csv.split('\n')
 
         // get random puzzle
-        puzzle = data[Math.floor(Math.random() * data.length)].split(",")
+        puzzle = data[Math.floor(Math.random() * data.length)].split(',')
 
         game.load(puzzle[1])
-        moves = puzzle[2].split(" ")
+        moves = puzzle[2].split(' ')
         orientation = game.turn() === 'b' ? 'white' : 'black'
 
         $loading.hide()
+        $loadingText.hide()
         $history.show()
 
         board = Chessboard('myBoard', {
@@ -159,7 +162,7 @@ function getPuzzle() {
 
         // make first move of the puzzle
         const move = game.move(moves[0], { sloppy: true })
-        moveSound.play()
+        moveSound.play().catch(() => {})
         counter = 1
 
         highlightMove(move)
@@ -197,8 +200,8 @@ let timeouts = []
 
 function showSolution(movesToNow) {
     if (movesToNow) {
-        movesToNow = movesToNow.substring(0, movesToNow.lastIndexOf(" "))
-        if (movesToNow.endsWith(".")) movesToNow = movesToNow.substring(0, movesToNow.lastIndexOf(" "))
+        movesToNow = movesToNow.substring(0, movesToNow.lastIndexOf(' '))
+        if (movesToNow.endsWith('.')) movesToNow = movesToNow.substring(0, movesToNow.lastIndexOf(' '))
     }
     for (let i = counter; i < moves.length; i++) {
         timeouts[i] = setTimeout(() => {
@@ -227,26 +230,26 @@ const config = {
     onSnapEnd,
 }
 
-const memo = localStorage.getItem("memo")
+const memo = localStorage.getItem('memo')
 if (memo)
     $memo.val(memo)
 else
     $memo.val(5)
-$memo.on("input", () => {
-    localStorage.setItem("memo", $memo.val())
+$memo.on('input', () => {
+    localStorage.setItem('memo', $memo.val())
 })
 
-const theme = localStorage.getItem("theme")
+const theme = localStorage.getItem('theme')
 if (theme) {
     $theme.val(theme)
     config.pieceTheme = `img/chesspieces/${theme}/{piece}.png`
 } else {
-    $theme.val("wikipedia")
+    $theme.val('wikipedia')
     config.pieceTheme = `img/chesspieces/wikipedia/{piece}.png`
 }
-$theme.on("change", () => {
+$theme.on('change', () => {
     config.pieceTheme = `img/chesspieces/${$theme.val()}/{piece}.png`
-    if ($giveUp.is(":hidden") || $next.is(":visible")) {
+    if ($giveUp.is(':hidden') || $next.is(':visible')) {
         board = Chessboard('myBoard', {
             ...config,
             orientation,
@@ -255,13 +258,23 @@ $theme.on("change", () => {
             pieceTheme: `img/chesspieces/${$theme.val()}/{piece}.png`
         })
     }
-    localStorage.setItem("theme", $theme.val())
+    localStorage.setItem('theme', $theme.val())
+})
+
+const rating = localStorage.getItem('rating')
+if (rating) {
+    $rating.val(rating)
+} else {
+    $rating.val('1400-1599')
+}
+$rating.on('change', () => {
+    localStorage.setItem('rating', $rating.val())
 })
 
 $history.hide()
-const history = localStorage.getItem("history")
+const history = localStorage.getItem('history')
 if (history) {
-    puzzleHistory = history.split(",")
+    puzzleHistory = history.split(',')
     updateHistory()
 }
 
@@ -273,7 +286,7 @@ $giveUp.click(() => {
         draggable: false,
         position: game.fen()
     })
-    updateHistory("0")
+    updateHistory('0')
     showSolution()
     $giveUp.hide()
     $next.show()

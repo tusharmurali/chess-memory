@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>ChessMemory</title>
+<!--    <link rel="shortcut icon" type="image/jpg" href="favicon.ico"/>-->
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-icons.css">
     <link rel="stylesheet" href="css/chessboard-1.0.0.min.css">
@@ -27,6 +28,21 @@
                             <option value="alpha">Alpha</option>
                             <option value="uscf">USCF</option>
                         </select>
+                        <br>
+                        <label for="rating">Puzzle rating:</label>
+                        <select id="rating">
+                            <option value="600-799">600-799</option>
+                            <option value="800-999">800-999</option>
+                            <option value="1000-1199">1000-1199</option>
+                            <option value="1200-1399">1200-1399</option>
+                            <option value="1400-1599">1400-1599</option>
+                            <option value="1600-1799">1600-1799</option>
+                            <option value="1800-1999">1800-1999</option>
+                            <option value="2000-2199">2000-2199</option>
+                            <option value="2200-2399">2200-2399</option>
+                            <option value="2400-2599">2400-2599</option>
+                            <option value="2600-2799">2600-2799</option>
+                        </select>
                     </span>
                 </nav>
             </div>
@@ -34,7 +50,14 @@
         <main class="px-3">
             <div class="row">
                 <div class="col">
-                    <div class="spinner-border text-secondary" id="loading" role="status" style="width: 4rem; height: 4rem;"></div>
+                    <div class="d-flex flex-column align-items-center justify-content-center">
+                        <div class="row">
+                            <div class="spinner-border text-secondary" id="loading" role="status" style="width: 4rem; height: 4rem;"></div>
+                        </div>
+                        <div class="row" id="loadingText">
+                            <strong>Loading puzzles...</strong>
+                        </div>
+                    </div>
                     <div id="myBoard" class="d-flex justify-content-center" style="width: 450px"></div>
                     <div id="pgn" class="mb-1"></div>
                     <div id="history"></div>
