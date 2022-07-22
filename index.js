@@ -11,6 +11,8 @@ let promotingTo = 'q'
 const moveSound = new Audio('move.mp3')
 const captureSound = new Audio('capture.mp3')
 const squareClass = 'square-55d63'
+const whiteSquareGrey = '#a9a9a9'
+const blackSquareGrey = '#696969'
 
 const $countdownContainer = $('#countdownContainer')
 $countdownContainer.hide()
@@ -22,6 +24,7 @@ $promotionDialog.hide()
 const $memo = $('#memo')
 const $theme = $('#theme')
 const $rating = $('#rating')
+const $easyMode = $('#easyMode')
 const $giveUp = $('#giveUp')
 const $retry = $('#retry')
 const $next = $('#next')
@@ -29,6 +32,21 @@ const $correct = $('#correct')
 const $incorrect = $('#incorrect')
 const $pgn = $('#pgn')
 const getImgSrc = piece => `img/chesspieces/${$theme.val()}/{piece}.png`.replace('{piece}', game.turn() + piece.toLocaleUpperCase())
+
+function removeGreySquares () {
+    $('#myBoard .square-55d63').css('background', '')
+}
+
+function greySquare (square) {
+    let $square = $('#myBoard .square-' + square)
+
+    let background = whiteSquareGrey
+    if ($square.hasClass('black-3c85d')) {
+        background = blackSquareGrey
+    }
+
+    $square.css('background', background)
+}
 
 function onDragStart(source, piece) {
     // do not pick up pieces if the game is over
@@ -42,6 +60,8 @@ function onDragStart(source, piece) {
 }
 
 function onDrop(source, target) {
+    removeGreySquares()
+
     const position = game.fen()
     const piece = game.get(source).type
 
@@ -103,6 +123,7 @@ function onDrop(source, target) {
         $giveUp.hide()
         $incorrect.show()
         $retry.show()
+        $easyMode.attr('disabled', false)
         $next.show()
 
         return 'snapback'
@@ -126,6 +147,7 @@ function onSnapEnd() {
         $giveUp.hide()
         $correct.show()
         $retry.show()
+        $easyMode.attr('disabled', false)
         $next.show()
 
         return
@@ -140,6 +162,27 @@ function onSnapEnd() {
     board.position(game.fen())
 
     updateStatus()
+}
+
+function onMouseoverSquare (square) {
+    if ($easyMode.is(':checked') && $giveUp.is(':visible')) {
+        // get list of possible moves for this square
+        let moves = game.moves({
+            square: square,
+            verbose: true
+        })
+
+        // exit if there are no moves available for this square
+        if (moves.length === 0) return
+
+        // highlight the square they moused over
+        greySquare(square)
+
+        // highlight the possible squares for this piece
+        for (let i = 0; i < moves.length; i++) {
+            greySquare(moves[i].to)
+        }
+    }
 }
 
 function updateStatus(prefix) {
@@ -194,6 +237,7 @@ function getPuzzle(p) {
                 position: game.fen(),
                 pieceTheme: 'img/chesspieces/blindfold.png'
             })
+            $easyMode.attr('disabled', true)
             $giveUp.show()
         }, 1000 * $memo.val())
 
@@ -244,6 +288,8 @@ const config = {
     onDragStart,
     onDrop,
     onSnapEnd,
+    onMouseoutSquare: removeGreySquares,
+    onMouseoverSquare
 }
 
 const memo = localStorage.getItem('memo')
@@ -310,6 +356,7 @@ $giveUp.click(() => {
     showSolution()
     $giveUp.hide()
     $retry.show()
+    $easyMode.attr('disabled', false)
     $next.show()
 })
 

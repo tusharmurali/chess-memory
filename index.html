@@ -17,7 +17,7 @@
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
         <header class="mb-auto">
             <div>
-                <h3 class="float-md-start mb-0">ChessMemory</h3>
+                <h3 class="float-md-start mb-0">ChessMemory <i class="bi bi-question-circle-fill tooltips" style="font-size: 15px"><span class="tooltiptext">Memorize the position shown. Once the pieces disappear, solve the puzzle as if the pieces were on the board.</span></i></h3>
                 <nav class="nav nav-masthead justify-content-center float-md-end">
                     <span>
                         <label for="memo">Memorization time (seconds):</label>
@@ -44,6 +44,9 @@
                             <option value="alpha">Alpha</option>
                             <option value="uscf">USCF</option>
                         </select>
+                        <br>
+                        <label for="easyMode">Easy mode:</label>
+                        <input type="checkbox" id="easyMode">
                     </span>
                 </nav>
             </div>
@@ -85,7 +88,7 @@
                         Incorrect
                     </h3>
                     <button id="giveUp" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white">Give Up</button>
-                    <button id="retry" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white mb-2">Retry</button>
+                    <button id="retry" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white mb-3">Retry</button>
                     <button id="next" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white">Next</button>
                 </div>
             </div>

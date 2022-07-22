@@ -104,3 +104,35 @@ body {
 .piece-name {
     display: none;
 }
+
+/*
+ * Tooltip
+ */
+
+/* Tooltip container */
+.tooltips {
+    position: relative;
+    display: inline-block;
+}
+
+/* Tooltip text */
+.tooltips .tooltiptext {
+    visibility: hidden;
+    width: 320px;
+    top: 150%;
+    left: 50%;
+    margin-left: -160px; /* Use half of the width (120/2 = 60), to center the tooltip */
+    background-color: black;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltips:hover .tooltiptext {
+    visibility: visible;
+}
