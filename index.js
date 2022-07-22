@@ -5,9 +5,11 @@ let puzzle  = null
 let moves  = null
 let orientation = null
 let counter = undefined
-let puzzleHistory = []
+let promoting = false
+let promotingTo = 'q'
 
 const moveSound = new Audio('move.mp3')
+const captureSound = new Audio('capture.mp3')
 const squareClass = 'square-55d63'
 
 const $countdownContainer = $('#countdownContainer')
@@ -15,15 +17,18 @@ $countdownContainer.hide()
 const $countdown = $('#countdown')
 const $loading = $('#loading')
 const $loadingText = $('#loadingText')
-const $history = $('#history')
+const $promotionDialog = $('#promotion-dialog')
+$promotionDialog.hide()
 const $memo = $('#memo')
 const $theme = $('#theme')
 const $rating = $('#rating')
 const $giveUp = $('#giveUp')
+const $retry = $('#retry')
 const $next = $('#next')
 const $correct = $('#correct')
 const $incorrect = $('#incorrect')
 const $pgn = $('#pgn')
+const getImgSrc = piece => `img/chesspieces/${$theme.val()}/{piece}.png`.replace('{piece}', game.turn() + piece.toLocaleUpperCase())
 
 function onDragStart(source, piece) {
     // do not pick up pieces if the game is over
@@ -38,19 +43,47 @@ function onDragStart(source, piece) {
 
 function onDrop(source, target) {
     const position = game.fen()
+    const piece = game.get(source).type
 
     // see if the move is legal
-    const move = game.move({
+    let move = game.move({
         from: source,
         to: target,
-        promotion: 'q' // NOTE: always promote to a queen for example simplicity
+        promotion: promotingTo
     })
 
     // illegal move
     if (move === null) return 'snapback'
 
+    const sourceRank = source.charAt(1)
+    const targetRank = target.charAt(1)
+
+    if (!promoting && piece === 'p'
+        && ((sourceRank === '7' && targetRank === '8') || (sourceRank === '2' && targetRank === '1'))) {
+        // undo the last move to allow for piece selection
+        game.undo()
+
+        // set the color of pieces in the modal
+        $('.promotion-piece-q').attr('src', getImgSrc('q'))
+        $('.promotion-piece-r').attr('src', getImgSrc('r'))
+        $('.promotion-piece-n').attr('src', getImgSrc('n'))
+        $('.promotion-piece-b').attr('src', getImgSrc('b'))
+        $promotionDialog.attr('data-source', source)
+        $promotionDialog.attr('data-target', target)
+        $promotionDialog.show()
+        $promotionDialog.position({ of: $board, my: 'center center', at: 'center center' })
+        $board.css('pointer-events', 'none')
+
+        promoting = true
+
+        return 'snapback'
+    }
+
+    if (move.captured) captureSound.play()
+    else moveSound.play()
+
     // incorrect move
-    if (!moves[counter].includes(source + target) && !game.in_checkmate()) {
+    if ((!moves[counter].includes(source + target) && !game.in_checkmate()) || (promoting && !moves[counter].endsWith(promotingTo))) {
         const movesToNow = game.pgn().split('\n').splice(3)[0]
 
         // display position after incorrect move
@@ -69,14 +102,14 @@ function onDrop(source, target) {
 
         $giveUp.hide()
         $incorrect.show()
+        $retry.show()
         $next.show()
-
-        updateHistory('0')
 
         return 'snapback'
     }
 
-    moveSound.play()
+    if (move.promotion) onSnapEnd()
+
     updateStatus()
 }
 
@@ -92,15 +125,16 @@ function onSnapEnd() {
         })
         $giveUp.hide()
         $correct.show()
+        $retry.show()
         $next.show()
 
-        updateHistory('1')
         return
     }
 
     // make the next move in the puzzle
     const move = game.move(moves[counter++], { sloppy : true })
-    moveSound.play()
+    if (move.captured) captureSound.play()
+    else moveSound.play()
 
     highlightMove(move)
     board.position(game.fen())
@@ -119,31 +153,12 @@ function updateStatus(prefix) {
     }
 }
 
-function updateHistory(number) {
-    if (number) {
-        if (puzzleHistory.length > 9) {
-            puzzleHistory.shift()
-            puzzleHistory.push(number)
-        } else {
-            puzzleHistory.push(number)
-        }
-        localStorage.setItem('history', puzzleHistory)
-    }
-    $history.empty()
-    for (let i = 0; i < puzzleHistory.length; i++) {
-        if (puzzleHistory[i] === '0')
-            $history.append('<span class="badge bg-danger mx-1"><i class="bi bi-x-lg"></i></span>')
-        else
-            $history.append('<span class="badge bg-success mx-1"><i class="bi bi-check-lg"></i></span>')
-    }
-}
-
-function getPuzzle() {
+function getPuzzle(p) {
     $.get('lichess_db_puzzle_' + $rating.val() + '.csv', csv => {
         const data = csv.split('\n')
 
         // get random puzzle
-        puzzle = data[Math.floor(Math.random() * data.length)].split(',')
+        puzzle = p ?? data[Math.floor(Math.random() * data.length)].split(',')
 
         game.load(puzzle[1])
         moves = puzzle[2].split(' ')
@@ -151,7 +166,6 @@ function getPuzzle() {
 
         $loading.hide()
         $loadingText.hide()
-        $history.show()
 
         board = Chessboard('myBoard', {
             ...config,
@@ -162,7 +176,8 @@ function getPuzzle() {
 
         // make first move of the puzzle
         const move = game.move(moves[0], { sloppy: true })
-        moveSound.play().catch(() => {})
+        if (move.captured) captureSound.play()
+        else moveSound.play()
         counter = 1
 
         highlightMove(move)
@@ -205,9 +220,10 @@ function showSolution(movesToNow) {
     }
     for (let i = counter; i < moves.length; i++) {
         timeouts[i] = setTimeout(() => {
-            game.move(moves[i], { sloppy : true })
+            const move = game.move(moves[i], { sloppy : true })
             board.position(game.fen())
-            moveSound.play()
+            if (move.captured) captureSound.play()
+            else moveSound.play()
             updateStatus(movesToNow)
         }, (i - counter + 1) * 1000)
     }
@@ -239,6 +255,14 @@ $memo.on('input', () => {
     localStorage.setItem('memo', $memo.val())
 })
 
+$('#promote-to li').click(function() {
+    $promotionDialog.hide()
+    promotingTo = $(this).find('span').text()
+    $board.css('pointer-events', 'auto')
+    onDrop($promotionDialog.attr('data-source'),$promotionDialog.attr('data-target'))
+    promoting = false
+})
+
 const theme = localStorage.getItem('theme')
 if (theme) {
     $theme.val(theme)
@@ -258,6 +282,10 @@ $theme.on('change', () => {
             pieceTheme: `img/chesspieces/${$theme.val()}/{piece}.png`
         })
     }
+    $('.promotion-piece-q').attr('src', getImgSrc('q'))
+    $('.promotion-piece-r').attr('src', getImgSrc('r'))
+    $('.promotion-piece-n').attr('src', getImgSrc('n'))
+    $('.promotion-piece-b').attr('src', getImgSrc('b'))
     localStorage.setItem('theme', $theme.val())
 })
 
@@ -271,13 +299,6 @@ $rating.on('change', () => {
     localStorage.setItem('rating', $rating.val())
 })
 
-$history.hide()
-const history = localStorage.getItem('history')
-if (history) {
-    puzzleHistory = history.split(',')
-    updateHistory()
-}
-
 $giveUp.hide()
 $giveUp.click(() => {
     board = Chessboard('myBoard', {
@@ -286,10 +307,20 @@ $giveUp.click(() => {
         draggable: false,
         position: game.fen()
     })
-    updateHistory('0')
     showSolution()
     $giveUp.hide()
+    $retry.show()
     $next.show()
+})
+
+$retry.hide()
+$retry.click(() => {
+    clearTimeouts()
+    getPuzzle(puzzle)
+    $correct.hide()
+    $incorrect.hide()
+    $retry.hide()
+    $next.hide()
 })
 
 $next.hide()
@@ -298,6 +329,7 @@ $next.click(() => {
     getPuzzle()
     $correct.hide()
     $incorrect.hide()
+    $retry.hide()
     $next.hide()
 })
 

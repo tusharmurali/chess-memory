@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/chessboard-1.0.0.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="js/jquery-3.6.0.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
     <script src="js/chess.js"></script>
     <script src="js/chessboard-1.0.0.min.js"></script>
 </head>
@@ -58,9 +59,16 @@
                             <strong>Loading puzzles...</strong>
                         </div>
                     </div>
+                    <div id="promotion-dialog" style="position: absolute; z-index: 99">
+                        <ol id="promote-to">
+                            <li class="ui-state-default"><span class="piece-name">q</span><img class="promotion-piece-q promotion-piece" /></li>
+                            <li class="ui-state-default"><span class="piece-name">r</span><img class="promotion-piece-r promotion-piece" /></li>
+                            <li class="ui-state-default"><span class="piece-name">n</span><img class="promotion-piece-n promotion-piece" /></li>
+                            <li class="ui-state-default"><span class="piece-name">b</span><img class="promotion-piece-b promotion-piece" /></li>
+                        </ol>
+                    </div>
                     <div id="myBoard" class="d-flex justify-content-center" style="width: 450px"></div>
                     <div id="pgn" class="mb-1"></div>
-                    <div id="history"></div>
                 </div>
                 <div class="col align-self-center" id="countdownContainer">
                     <h1 id="countdown" class="text-white mb-3"></h1>
@@ -76,8 +84,9 @@
                         <br>
                         Incorrect
                     </h3>
-                    <button id="giveUp" type="button" class="btn btn-lg btn-secondary fw-bold border-white bg-white">Give Up</button>
-                    <button id="next" type="button" class="btn btn-lg btn-secondary fw-bold border-white bg-white">Next</button>
+                    <button id="giveUp" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white">Give Up</button>
+                    <button id="retry" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white mb-2">Retry</button>
+                    <button id="next" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white">Next</button>
                 </div>
             </div>
         </main>
