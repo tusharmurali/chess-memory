@@ -33,7 +33,7 @@ body {
 #promotion-dialog {
     display: none;
     width: fit-content;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .ui-dialog {
