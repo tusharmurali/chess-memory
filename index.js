@@ -249,6 +249,7 @@ function getPuzzle(p) {
                 position: game.fen(),
                 pieceTheme: 'img/chesspieces/blindfold.png'
             })
+            $(`img[data-piece^=${game.turn()}]`).css('cursor', 'pointer')
             $easyMode.attr('disabled', true)
             $giveUp.show()
         }, 1000 * $memo.val())
@@ -404,7 +405,6 @@ $(document).keydown(function (e) {
     if (e.keyCode === 37) {
         const m1 = game.undo()
         const m2 = game.undo()
-        console.log(m1, m2)
         if (!m2) {
             game.move(m1)
             return
@@ -420,7 +420,7 @@ $(document).keydown(function (e) {
     }
     let html = $pgn.html().replaceAll('<strong>', '')
     html = html.replaceAll('</strong>', '')
-    const end = html.split(getStatus())[1]
+    const end = html.split(getStatus())[1] ?? ''
     const start = html.slice(0, -end.length)
     const past = start.split(' ')
     const bold = past[past.length - 1]
