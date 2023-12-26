@@ -26,6 +26,7 @@ const $memo = $('#memo')
 const $theme = $('#theme')
 const $rating = $('#rating')
 const $easyMode = $('#easyMode')
+const $again = $('#again')
 const $giveUp = $('#giveUp')
 const $retry = $('#retry')
 const $next = $('#next')
@@ -76,6 +77,7 @@ function onDrop(source, target) {
     // illegal move
     if (move === null) return 'snapback'
 
+    $(`img[data-piece^=${orientation.charAt(0)}]`).css('cursor', 'pointer')
     const sourceRank = source.charAt(1)
     const targetRank = target.charAt(1)
 
@@ -121,10 +123,12 @@ function onDrop(source, target) {
 
         showSolution(movesToNow)
 
+        $again.hide()
         $giveUp.hide()
         $incorrect.show()
         $retry.show()
         $easyMode.attr('disabled', false)
+        $(`img[data-piece^=${orientation.charAt(0)}]`).css('cursor', 'auto')
         $next.show()
 
         return 'snapback'
@@ -145,10 +149,12 @@ function onSnapEnd() {
             draggable: false,
             position: game.fen()
         })
+        $again.hide()
         $giveUp.hide()
         $correct.show()
         $retry.show()
         $easyMode.attr('disabled', false)
+        $(`img[data-piece^=${orientation.charAt(0)}]`).css('cursor', 'auto')
         $next.show()
 
         return
@@ -161,6 +167,7 @@ function onSnapEnd() {
 
     highlightMove(move)
     board.position(game.fen())
+    $(`img[data-piece^=${orientation.charAt(0)}]`).css('cursor', 'pointer')
 
     updateStatus()
 }
@@ -251,6 +258,7 @@ function getPuzzle(p) {
             })
             $(`img[data-piece^=${game.turn()}]`).css('cursor', 'pointer')
             $easyMode.attr('disabled', true)
+            $again.show()
             $giveUp.show()
         }, 1000 * $memo.val())
 
@@ -358,6 +366,18 @@ $rating.on('change', () => {
     localStorage.setItem('rating', $rating.val())
 })
 
+$again.hide()
+$again.click(() => {
+    // marker
+    clearTimeouts()
+    getPuzzle(puzzle)
+    $again.hide()
+    $giveUp.hide()
+    $correct.hide()
+    $incorrect.hide()
+})
+
+
 $giveUp.hide()
 $giveUp.click(() => {
     board = Chessboard('myBoard', {
@@ -370,6 +390,7 @@ $giveUp.click(() => {
     $giveUp.hide()
     $retry.show()
     $easyMode.attr('disabled', false)
+    $(`img[data-piece^=${orientation.charAt(0)}]`).css('cursor', 'auto')
     $next.show()
 })
 
@@ -403,12 +424,15 @@ $(document).keydown(function (e) {
     if (history.length === 0 && (!move || move.from + move.to + (move.promotion ?? '') !== moves[moves.length - 1])) return
 
     if (e.keyCode === 37) {
+        console.log(game.pgn())
         const m1 = game.undo()
         const m2 = game.undo()
+        console.log(m1, m2)
         if (!m2) {
             game.move(m1)
             return
         }
+        console.log('here')
         game.move(m2)
         history.push(m1)
         board.position(game.fen())
