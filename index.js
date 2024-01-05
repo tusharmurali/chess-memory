@@ -387,6 +387,7 @@ $giveUp.click(() => {
         position: game.fen()
     })
     showSolution()
+    $again.hide()
     $giveUp.hide()
     $retry.show()
     $easyMode.attr('disabled', false)
