@@ -58,7 +58,7 @@
                     <div class="col">
                         <span>
                             <label for="memo">Memorization time (s):</label>
-                            <input id="memo" type="number" min="1" style="max-width: 50px">
+                            <input id="memo" type="number" min="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57" style="max-width: 50px">
                         </span>
                     </div>
                 </nav>
