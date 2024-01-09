@@ -35,11 +35,13 @@ const $incorrect = $('#incorrect')
 const $pgn = $('#pgn')
 const getImgSrc = piece => `img/chesspieces/${$theme.val()}/{piece}.png`.replace('{piece}', game.turn() + piece.toLocaleUpperCase())
 
+// Functions for Easy Mode
+
 function removeGreySquares () {
     $('#myBoard .square-55d63').css('background', '')
 }
 
-function greySquare (square) {
+function greySquare(square) {
     let $square = $('#myBoard .square-' + square)
 
     let background = whiteSquareGrey
@@ -49,6 +51,8 @@ function greySquare (square) {
 
     $square.css('background', background)
 }
+
+// Handle mouse events with chessboard.js
 
 function onDragStart(source, piece) {
     // do not pick up pieces if the game is over
@@ -123,6 +127,7 @@ function onDrop(source, target) {
 
         showSolution(movesToNow)
 
+        // update interface
         $again.hide()
         $giveUp.hide()
         $incorrect.show()
@@ -149,6 +154,7 @@ function onSnapEnd() {
             draggable: false,
             position: game.fen()
         })
+        // update interface
         $again.hide()
         $giveUp.hide()
         $correct.show()
@@ -193,6 +199,8 @@ function onMouseoverSquare (square) {
     }
 }
 
+// Functions for notation below the chess board
+
 function getStatus(prefix) {
     if (prefix) {
         let status = game.pgn().split('\n').splice(3)[0]
@@ -215,11 +223,16 @@ function updateStatus(prefix) {
     }
 }
 
+/**
+ * Generate a new puzzle
+ * @param {string} [p] - puzzle ID, if already known
+ */
+
 function getPuzzle(p) {
     $.get('lichess_db_puzzle/' + $rating.val() + '.csv', csv => {
         const data = csv.split('\n')
 
-        // get random puzzle
+        // get random puzzle or p, if already known
         puzzle = p ?? data[Math.floor(Math.random() * data.length)].split(',')
 
         game.load(puzzle[1])
@@ -264,6 +277,7 @@ function getPuzzle(p) {
 
         $countdownContainer.show()
 
+        // start countdown
         let countdown = $memo.val()
         $countdown.html(countdown)
         const interval = setInterval(() => {
@@ -275,6 +289,8 @@ function getPuzzle(p) {
         }, 1000)
     })
 }
+
+// Functions for showing sequence of moves in puzzle solution
 
 let timeouts = []
 
@@ -305,6 +321,8 @@ function highlightMove(move) {
     $board.find('.square-' + move.to).addClass('highlight-black')
 }
 
+// Configuration for Chessboard
+
 const config = {
     onDragStart,
     onDrop,
@@ -312,6 +330,12 @@ const config = {
     onMouseoutSquare: removeGreySquares,
     onMouseoverSquare
 }
+
+// Prevent page scrolling when dragging pieces on mobile
+
+$board.on('scroll touchmove touchend touchstart contextmenu', event => event.preventDefault())
+
+// Persist memorization time by binding to local storage
 
 const memo = localStorage.getItem('memo')
 if (memo)
@@ -330,7 +354,7 @@ $('#promote-to li').click(function() {
     promoting = false
 })
 
-$board.on('scroll touchmove touchend touchstart contextmenu', event => event.preventDefault())
+// Set initial piece theme, and persist by binding to local storage
 
 const theme = localStorage.getItem('theme')
 if (theme) {
@@ -358,6 +382,8 @@ $theme.on('change', () => {
     localStorage.setItem('theme', $theme.val())
 })
 
+// Persist puzzle rating by binding to local storage
+
 const rating = localStorage.getItem('rating')
 if (rating) {
     $rating.val(rating)
@@ -367,6 +393,8 @@ if (rating) {
 $rating.on('change', () => {
     localStorage.setItem('rating', $rating.val())
 })
+
+// Button Functionality
 
 $again.hide()
 $again.click(() => {
@@ -420,6 +448,8 @@ $next.click(() => {
 $correct.hide()
 $incorrect.hide()
 
+// Allow toggling back and forth between moves after puzzle ended using arrow keys
+
 $(document).keydown(function (e) {
     const move = game.undo()
     game.move(move)
@@ -459,5 +489,7 @@ $(document).keydown(function (e) {
     }
     $pgn.html(start.slice(0, -bold.length) + '<strong>' + bold + '</strong>' + end)
 })
+
+// Initial call
 
 getPuzzle()
