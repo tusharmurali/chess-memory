@@ -1,119 +1,204 @@
 <!DOCTYPE html>
 <html lang="en" class="h-100">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ChessMemory</title>
-    <link rel="shortcut icon" type="image/jpg" href="favicon.ico"/>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/chessboard-1.0.0.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" type="image/jpg" href="favicon.ico" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-icons.css" />
+    <link rel="stylesheet" href="css/chessboard-1.0.0.min.css" />
+    <link rel="stylesheet" href="style.css" />
     <script src="js/jquery-3.6.0.min.js"></script>
     <script src="js/jquery-ui.min.js"></script>
     <script src="js/chess.js"></script>
     <script src="js/chessboard-1.0.0.min.js"></script>
-</head>
-<body class="d-flex h-100 text-center text-white bg-dark">
+  </head>
+  <body class="d-flex h-100 text-center text-white bg-dark">
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-        <header class="mb-auto">
-            <div>
-                <h3 class="float-md-center mb-3">ChessMemory <i class="bi bi-question-circle-fill tooltips" style="font-size: 15px"><span class="tooltiptext">Memorize the position shown. Once the pieces disappear, solve the puzzle as if the pieces were on the board.</span></i></h3>
-                <nav class="nav nav-masthead justify-content-center float-md-end">
-                    <div class="col">
-                        <span>
-                            <label for="theme">Piece theme:</label>
-                        <select id="theme">
-                            <option value="wikipedia">Default</option>
-                            <option value="alpha">Alpha</option>
-                            <option value="uscf">USCF</option>
-                        </select>
-                        </span>
-                    </div>
-                    <div class="col">
-                        <div class="span">
-                            <label for="rating">Puzzle rating:</label>
-                            <select id="rating">
-                                <option value="600-799">600-799</option>
-                                <option value="800-999">800-999</option>
-                                <option value="1000-1199">1000-1199</option>
-                                <option value="1200-1399">1200-1399</option>
-                                <option value="1400-1599">1400-1599</option>
-                                <option value="1600-1799">1600-1799</option>
-                                <option value="1800-1999">1800-1999</option>
-                                <option value="2000-2199">2000-2199</option>
-                                <option value="2200-2399">2200-2399</option>
-                                <option value="2400-2599">2400-2599</option>
-                                <option value="2600-2799">2600-2799</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="w-100"></div>
-                    <div class="col">
-                        <div class="span">
-                            <label for="easyMode">Easy mode:</label>
-                            <input type="checkbox" id="easyMode">
-                        </div>
-                    </div>
-                    <div class="col">
-                        <span>
-                            <label for="memo">Memorization time (s):</label>
-                            <input id="memo" type="number" min="1" style="max-width: 50px">
-                        </span>
-                    </div>
-                </nav>
-            </div>
-        </header>
-        <main class="px-3">
+      <header class="mb-auto">
+        <div>
+        <nav>
+          <h1 class="float-md-center mb-4 mt-4">
+            Chess Memory
+            <i
+              class="bi bi-question-circle-fill tooltips"
+              style="font-size: 15px"
+            >
+              <span class="tooltiptext"
+                >Memorize the position shown. Once the pieces disappear, solve
+                the puzzle as if the pieces were on the board.</span
+              >
+            </i>
+          </h1>
+          <div class="container">
+            
+          </div>
             <div class="row">
-                <div class="col">
-                    <div class="d-flex flex-column align-items-center justify-content-center">
-                        <div class="row">
-                            <div class="spinner-border text-secondary" id="loading" role="status" style="width: 4rem; height: 4rem;"></div>
-                        </div>
-                        <div class="row" id="loadingText">
-                            <strong>Loading puzzles...</strong>
-                        </div>
-                    </div>
-                    <div id="promotion-dialog" style="position: absolute; z-index: 99">
-                        <ol id="promote-to">
-                            <li class="ui-state-default"><span class="piece-name">q</span><img class="promotion-piece-q promotion-piece" /></li>
-                            <li class="ui-state-default"><span class="piece-name">r</span><img class="promotion-piece-r promotion-piece" /></li>
-                            <li class="ui-state-default"><span class="piece-name">n</span><img class="promotion-piece-n promotion-piece" /></li>
-                            <li class="ui-state-default"><span class="piece-name">b</span><img class="promotion-piece-b promotion-piece" /></li>
-                        </ol>
-                    </div>
-                    <div id="myBoard" class="d-flex justify-content-center"></div>
-                    <div id="pgn" class="mb-1"></div>
+              <div class="col">
+                <div>
+                  <label for="theme">Piece Theme</label>
+                  <select id="theme" class="form-select mt-2">
+                    <option value="wikipedia">Default</option>
+                    <option value="alpha">Alpha</option>
+                    <option value="uscf">USCF</option>
+                  </select>
                 </div>
-                <div class="w-100 info-divider"></div>
-                <div class="col align-self-center">
-                    <div id="countdownContainer">
-                        <h1 id="countdown" class="text-white mb-3"></h1>
-                    </div>
-                    <div class="d-flex info-display">
-                        <h3 id="correct" class="text-success mb-3">
-                            <i class="bi bi-check" style="font-size: 50px"></i>
-                            <br>
-                            Correct!
-                        </h3>
-                        <h3 id="incorrect" class="text-danger mb-3">
-                            <i class="bi bi-x" style="font-size: 50px"></i>
-                            <br>
-                            Incorrect
-                        </h3>
-                        <button id="again" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white mb-3 align-self-center">Again</button>
-                        <button id="giveUp" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white mb-3 align-self-center">Give Up</button>
-                        <button id="retry" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white mb-3 align-self-center">Retry</button>
-                        <button id="next" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white mb-3 align-self-center">Next</button>
-                    </div>
+              </div>
+              <div class="col">
+                <div>
+                  <label for="rating">Puzzle Rating</label>
+                  <select id="rating" class="form-select mt-2">
+                    <option value="600-799">600-799</option>
+                    <option value="800-999">800-999</option>
+                    <option value="1000-1199">1000-1199</option>
+                    <option value="1200-1399">1200-1399</option>
+                    <option value="1400-1599">1400-1599</option>
+                    <option value="1600-1799">1600-1799</option>
+                    <option value="1800-1999">1800-1999</option>
+                    <option value="2000-2199">2000-2199</option>
+                    <option value="2200-2399">2200-2399</option>
+                    <option value="2400-2599">2400-2599</option>
+                    <option value="2600-2799">2600-2799</option>
+                  </select>
                 </div>
+              </div>
             </div>
-        </main>
-        <footer class="mt-auto text-white-50">
-            Puzzles by <a href="https://lichess.org" target="_blank" class="text-white">lichess.org</a>. Check out the <a href="https://github.com/tusharmurali/chess-memory" target="_blank" class="text-white">GitHub</a>.
-        </footer>
-        <script src="index.js"></script>
+
+            <div class="row mt-4">
+              <div class="col">
+                <div class=>
+                  <label for="easyMode">Toggle Easy Mode</label>
+                  <div class="mt-2">
+                      <input
+                        type="checkbox"
+                        id="easyMode"
+                        class="form-check-input p-3"
+                      />
+                  </div>
+                </div>
+              </div>
+
+              <div class="col">
+                <div>
+                  <label for="memo">Memorization time (s)</label>
+                  <div class="d-flex justify-content-center">
+                      <input
+                        id="memo"
+                        type="number"
+                        min="1"
+                        style="max-width: 80px"
+                        class="form-control mt-2"
+                      />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </header>
+      <main class="px-3">
+        <div class="row">
+          <div class="col">
+            <div
+              class="d-flex flex-column align-items-center justify-content-center"
+            >
+              <div class="row">
+                <div
+                  class="spinner-border text-secondary"
+                  id="loading"
+                  role="status"
+                  style="width: 4rem; height: 4rem"
+                ></div>
+              </div>
+              <div class="row" id="loadingText">
+                <strong>Loading puzzles...</strong>
+              </div>
+            </div>
+            <div id="promotion-dialog" style="position: absolute; z-index: 99">
+              <ol id="promote-to">
+                <li class="ui-state-default">
+                  <span class="piece-name">q</span
+                  ><img class="promotion-piece-q promotion-piece" />
+                </li>
+                <li class="ui-state-default">
+                  <span class="piece-name">r</span
+                  ><img class="promotion-piece-r promotion-piece" />
+                </li>
+                <li class="ui-state-default">
+                  <span class="piece-name">n</span
+                  ><img class="promotion-piece-n promotion-piece" />
+                </li>
+                <li class="ui-state-default">
+                  <span class="piece-name">b</span
+                  ><img class="promotion-piece-b promotion-piece" />
+                </li>
+              </ol>
+            </div>
+            <div id="myBoard" class="d-flex justify-content-center"></div>
+            <div id="pgn" class="mb-1"></div>
+          </div>
+          <div class="w-100 info-divider"></div>
+          <div class="col align-self-center">
+            <div id="countdownContainer">
+              <h1 id="countdown" class="text-white mb-3"></h1>
+            </div>
+            <div class="d-flex info-display">
+              <h3 id="correct" class="text-success mb-3">
+                <i class="bi bi-check" style="font-size: 50px"></i>
+                <br />
+                Correct!
+              </h3>
+              <h3 id="incorrect" class="text-danger mb-3">
+                <i class="bi bi-x" style="font-size: 50px"></i>
+                <br />
+                Incorrect
+              </h3>
+              <button
+                id="again"
+                type="button"
+                class="btn btn-md btn-secondary fw-bold border-white bg-white mb-3 align-self-center w-100"
+              >
+                Again
+              </button>
+              <button
+                id="giveUp"
+                type="button"
+                class="btn btn-md btn-secondary fw-bold border-white bg-white mb-3 align-self-center w-100"
+              >
+                Give Up
+              </button>
+              <button
+                id="retry"
+                type="button"
+                class="btn btn-md btn-secondary fw-bold border-white bg-white mb-3 align-self-center w-100"
+              >
+                Retry
+              </button>
+              <button
+                id="next"
+                type="button"
+                class="btn btn-md btn-secondary fw-bold border-white bg-white mb-3 align-self-center w-100"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+      <footer class="mt-auto text-white-50">
+        Puzzles by
+        <a href="https://lichess.org" target="_blank" class="text-white"
+          >lichess.org</a
+        >. Check out the
+        <a
+          href="https://github.com/tusharmurali/chess-memory"
+          target="_blank"
+          class="text-white"
+          >GitHub</a
+        >.
+      </footer>
+      <script src="index.js"></script>
     </div>
-</body>
+  </body>
 </html>
