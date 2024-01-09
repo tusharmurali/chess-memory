@@ -216,7 +216,7 @@ function updateStatus(prefix) {
 }
 
 function getPuzzle(p) {
-    $.get('lichess_db_puzzle_' + $rating.val() + '.csv', csv => {
+    $.get('lichess_db_puzzle/' + $rating.val() + '.csv', csv => {
         const data = csv.split('\n')
 
         // get random puzzle
