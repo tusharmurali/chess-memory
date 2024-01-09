@@ -238,8 +238,12 @@ function getPuzzle(p) {
 
         // make first move of the puzzle
         const move = game.move(moves[0], { sloppy: true })
-        if (move.captured) captureSound.play()
-        else moveSound.play()
+        try {
+            if (move.captured) captureSound.play()
+            else moveSound.play()
+        } catch (e) {
+            console.log(e)
+        }
         counter = 1
 
         highlightMove(move)
@@ -329,6 +333,8 @@ $('#promote-to li').click(function() {
     onDrop($promotionDialog.attr('data-source'),$promotionDialog.attr('data-target'))
     promoting = false
 })
+
+$board.on('scroll touchmove touchend touchstart contextmenu', event => event.preventDefault())
 
 const theme = localStorage.getItem('theme')
 if (theme) {
