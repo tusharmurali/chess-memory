@@ -136,3 +136,36 @@ body {
 .tooltips:hover .tooltiptext {
     visibility: visible;
 }
+
+#myBoard {
+    width: 450px;
+}
+
+.info-display {
+    flex-direction: column;
+}
+
+.info-divider {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    #myBoard {
+        width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .info-display {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .info-display > h3, button {
+        margin-right: 1rem !important;
+    }
+
+    .info-divider {
+        display: block;
+    }
+}

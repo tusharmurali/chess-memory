@@ -238,12 +238,8 @@ function getPuzzle(p) {
 
         // make first move of the puzzle
         const move = game.move(moves[0], { sloppy: true })
-        try {
-            if (move.captured) captureSound.play()
-            else moveSound.play()
-        } catch (e) {
-            console.log(e)
-        }
+        if (move.captured) captureSound.play()
+        else moveSound.play()
         counter = 1
 
         highlightMove(move)

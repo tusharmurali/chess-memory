@@ -2,6 +2,7 @@
 <html lang="en" class="h-100">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ChessMemory</title>
     <link rel="shortcut icon" type="image/jpg" href="favicon.ico"/>
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -17,37 +18,49 @@
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
         <header class="mb-auto">
             <div>
-                <h3 class="float-md-start mb-0">ChessMemory <i class="bi bi-question-circle-fill tooltips" style="font-size: 15px"><span class="tooltiptext">Memorize the position shown. Once the pieces disappear, solve the puzzle as if the pieces were on the board.</span></i></h3>
+                <h3 class="float-md-center mb-3">ChessMemory <i class="bi bi-question-circle-fill tooltips" style="font-size: 15px"><span class="tooltiptext">Memorize the position shown. Once the pieces disappear, solve the puzzle as if the pieces were on the board.</span></i></h3>
                 <nav class="nav nav-masthead justify-content-center float-md-end">
-                    <span>
-                        <label for="memo">Memorization time (seconds):</label>
-                        <input id="memo" type="number" min="1" style="max-width: 50px">
-                        <br>
-                        <label for="rating">Puzzle rating:</label>
-                        <select id="rating">
-                            <option value="600-799">600-799</option>
-                            <option value="800-999">800-999</option>
-                            <option value="1000-1199">1000-1199</option>
-                            <option value="1200-1399">1200-1399</option>
-                            <option value="1400-1599">1400-1599</option>
-                            <option value="1600-1799">1600-1799</option>
-                            <option value="1800-1999">1800-1999</option>
-                            <option value="2000-2199">2000-2199</option>
-                            <option value="2200-2399">2200-2399</option>
-                            <option value="2400-2599">2400-2599</option>
-                            <option value="2600-2799">2600-2799</option>
-                        </select>
-                        <br>
-                        <label for="theme">Piece theme:</label>
+                    <div class="col">
+                        <span>
+                            <label for="theme">Piece theme:</label>
                         <select id="theme">
                             <option value="wikipedia">Default</option>
                             <option value="alpha">Alpha</option>
                             <option value="uscf">USCF</option>
                         </select>
-                        <br>
-                        <label for="easyMode">Easy mode:</label>
-                        <input type="checkbox" id="easyMode">
-                    </span>
+                        </span>
+                    </div>
+                    <div class="col">
+                        <div class="span">
+                            <label for="rating">Puzzle rating:</label>
+                            <select id="rating">
+                                <option value="600-799">600-799</option>
+                                <option value="800-999">800-999</option>
+                                <option value="1000-1199">1000-1199</option>
+                                <option value="1200-1399">1200-1399</option>
+                                <option value="1400-1599">1400-1599</option>
+                                <option value="1600-1799">1600-1799</option>
+                                <option value="1800-1999">1800-1999</option>
+                                <option value="2000-2199">2000-2199</option>
+                                <option value="2200-2399">2200-2399</option>
+                                <option value="2400-2599">2400-2599</option>
+                                <option value="2600-2799">2600-2799</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="w-100"></div>
+                    <div class="col">
+                        <div class="span">
+                            <label for="easyMode">Easy mode:</label>
+                            <input type="checkbox" id="easyMode">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <span>
+                            <label for="memo">Memorization time (s):</label>
+                            <input id="memo" type="number" min="1" style="max-width: 50px">
+                        </span>
+                    </div>
                 </nav>
             </div>
         </header>
@@ -70,27 +83,30 @@
                             <li class="ui-state-default"><span class="piece-name">b</span><img class="promotion-piece-b promotion-piece" /></li>
                         </ol>
                     </div>
-                    <div id="myBoard" class="d-flex justify-content-center" style="width: 450px"></div>
+                    <div id="myBoard" class="d-flex justify-content-center"></div>
                     <div id="pgn" class="mb-1"></div>
                 </div>
-                <div class="col align-self-center" id="countdownContainer">
-                    <h1 id="countdown" class="text-white mb-3"></h1>
-                </div>
-                <div class="col align-self-end">
-                    <h3 id="correct" class="text-success mb-3">
-                        <i class="bi bi-check" style="font-size: 50px"></i>
-                        <br>
-                        Correct!
-                    </h3>
-                    <h3 id="incorrect" class="text-danger mb-3">
-                        <i class="bi bi-x" style="font-size: 50px"></i>
-                        <br>
-                        Incorrect
-                    </h3>
-                    <button id="again" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white mb-3">Again</button>
-                    <button id="giveUp" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white">Give Up</button>
-                    <button id="retry" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white mb-3">Retry</button>
-                    <button id="next" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white">Next</button>
+                <div class="w-100 info-divider"></div>
+                <div class="col align-self-center">
+                    <div id="countdownContainer">
+                        <h1 id="countdown" class="text-white mb-3"></h1>
+                    </div>
+                    <div class="d-flex info-display">
+                        <h3 id="correct" class="text-success mb-3">
+                            <i class="bi bi-check" style="font-size: 50px"></i>
+                            <br>
+                            Correct!
+                        </h3>
+                        <h3 id="incorrect" class="text-danger mb-3">
+                            <i class="bi bi-x" style="font-size: 50px"></i>
+                            <br>
+                            Incorrect
+                        </h3>
+                        <button id="again" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white mb-3 align-self-center">Again</button>
+                        <button id="giveUp" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white mb-3 align-self-center">Give Up</button>
+                        <button id="retry" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white mb-3 align-self-center">Retry</button>
+                        <button id="next" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white mb-3 align-self-center">Next</button>
+                    </div>
                 </div>
             </div>
         </main>
