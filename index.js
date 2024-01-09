@@ -4,6 +4,7 @@ let game = new Chess()
 let puzzle  = null
 let moves  = null
 let orientation = null
+// counter for current index in the puzzle solution
 let counter = undefined
 let promoting = false
 let promotingTo = 'q'
@@ -30,6 +31,8 @@ const $again = $('#again')
 const $giveUp = $('#giveUp')
 const $retry = $('#retry')
 const $next = $('#next')
+const $left = $('#left')
+const $right = $('#right')
 const $correct = $('#correct')
 const $incorrect = $('#incorrect')
 const $pgn = $('#pgn')
@@ -135,6 +138,8 @@ function onDrop(source, target) {
         $easyMode.attr('disabled', false)
         $(`img[data-piece^=${orientation.charAt(0)}]`).css('cursor', 'auto')
         $next.show()
+        $left.css('visibility', 'visible')
+        $right.css('visibility', 'visible')
 
         return 'snapback'
     }
@@ -162,6 +167,8 @@ function onSnapEnd() {
         $easyMode.attr('disabled', false)
         $(`img[data-piece^=${orientation.charAt(0)}]`).css('cursor', 'auto')
         $next.show()
+        $left.css('visibility', 'visible')
+        $right.css('visibility', 'visible')
 
         return
     }
@@ -308,6 +315,10 @@ function showSolution(movesToNow) {
             updateStatus(movesToNow)
         }, (i - counter + 1) * 1000)
     }
+    timeouts.push(setTimeout(() => {
+        $left.css('visibility', 'visible')
+        $right.css('visibility', 'visible')
+    }, (moves.length - counter) * 1000))
 }
 
 function clearTimeouts() {
@@ -433,6 +444,8 @@ $retry.click(() => {
     $incorrect.hide()
     $retry.hide()
     $next.hide()
+    $left.css('visibility', 'hidden')
+    $right.css('visibility', 'hidden')
 })
 
 $next.hide()
@@ -443,7 +456,14 @@ $next.click(() => {
     $incorrect.hide()
     $retry.hide()
     $next.hide()
+    $left.css('visibility', 'hidden')
+    $right.css('visibility', 'hidden')
 })
+
+$left.css('visibility', 'hidden')
+$right.css('visibility', 'hidden')
+
+// Hide info display
 
 $correct.hide()
 $incorrect.hide()

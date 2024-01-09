@@ -84,7 +84,11 @@
                         </ol>
                     </div>
                     <div id="myBoard" class="d-flex justify-content-center"></div>
-                    <div id="pgn" class="mb-1"></div>
+                    <div class="d-flex flex-row justify-content-between mt-2">
+                        <button id="left" type="button" onclick="document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 37 }))" class="btn btn-md btn-secondary btn-sm fw-bold border-white bg-white mb-3 align-self-center"><i class="bi bi-chevron-left"></i></button>
+                        <div id="pgn" class="mb-1"></div>
+                        <button id="right" type="button" onclick="document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 39 }))" class="btn btn-md btn-secondary btn-sm fw-bold border-white bg-white mb-3 align-self-center"><i class="bi bi-chevron-right"></i></button>
+                    </div>
                 </div>
                 <div class="w-100 info-divider"></div>
                 <div class="col align-self-center">
