@@ -40,6 +40,11 @@
  * Base structure
  */
 
+html {
+    /* reserve scrollbar space on both sides so content never shifts sideways if a scrollbar appears */
+    scrollbar-gutter: stable both-edges;
+}
+
 body {
     background: var(--bg);
     color: var(--text);
@@ -237,6 +242,7 @@ kbd {
  */
 
 .puzzle {
+    position: relative;
     width: 100%;
     max-width: var(--board-size, 450px);
     margin: 1rem auto 0;
@@ -245,25 +251,34 @@ kbd {
 /* "Fit board to screen": size the board to the viewport height, i.e. 100vh minus the vertical
    chrome around the board (header, status row, move row, action buttons, footer, padding) */
 html[data-fit] .puzzle {
-    max-width: max(240px, min(100%, calc(100vh - 21rem)));
+    max-width: max(240px, min(100%, calc(100vh - 20rem)));
 }
 
 /* on short screens tighten spacing so the board gets more room */
 @media (max-height: 720px) {
     .app { padding-top: .5rem; padding-bottom: .5rem; }
     .puzzle { margin-top: .5rem; }
-    html[data-fit] .puzzle { max-width: max(240px, min(100%, calc(100vh - 18.5rem))); }
+    html[data-fit] .puzzle { max-width: max(240px, min(100%, calc(100vh - 17.5rem))); }
     .actions { margin-top: .5rem; }
     footer { padding-top: .5rem; }
 }
 
 .loading {
+    /* overlaid on the board area so showing/hiding it never moves the layout */
+    position: absolute;
+    top: 2.25rem;
+    left: 0;
+    right: 0;
+    aspect-ratio: 1 / 1;
+    z-index: 5;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: .75rem;
     color: var(--muted);
-    margin-bottom: 1rem;
+    background: var(--bg);
+    pointer-events: none;
 }
 
 .loading .spinner-border {

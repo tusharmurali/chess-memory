@@ -27,8 +27,7 @@ const blackSquareGrey = '#696969'
 const $countdownContainer = $('#countdownContainer')
 $countdownContainer.hide()
 const $countdown = $('#countdown')
-const $loading = $('#loading')
-const $loadingText = $('#loadingText')
+const $loading = $('.loading')
 const $promotionDialog = $('#promotion-dialog')
 $promotionDialog.hide()
 const $memo = $('#memo')
@@ -252,7 +251,6 @@ function loadPuzzles(rating) {
     if (puzzleCache[rating]) return Promise.resolve(puzzleCache[rating])
 
     $loading.show()
-    $loadingText.show()
     return $.get('lichess_db_puzzle/' + rating + '.csv').then(csv => {
         puzzleCache[rating] = csv.trimEnd().split('\n')
         return puzzleCache[rating]
@@ -283,7 +281,6 @@ function getPuzzle(p) {
         $turn.show()
 
         $loading.hide()
-        $loadingText.hide()
 
         board = Chessboard('myBoard', {
             ...config,
