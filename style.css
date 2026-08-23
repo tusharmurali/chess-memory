@@ -222,11 +222,11 @@ kbd {
     margin: 1rem auto 0;
 }
 
-/* on short screens drop the subtitle and tighten spacing so the board gets more room */
+/* on short screens tighten spacing so the board gets more room */
 @media (max-height: 720px) {
-    .subtitle { display: none; }
+    .subtitle { font-size: .8rem; }
     .app { padding-top: .5rem; padding-bottom: .5rem; }
-    .puzzle { max-width: max(240px, min(450px, calc(100vh - 19rem))); margin-top: .5rem; }
+    .puzzle { max-width: max(240px, min(450px, calc(100vh - 20rem))); margin-top: .5rem; }
     .status-row { min-height: 2.2rem; margin-bottom: .25rem; }
     .actions { margin-top: .5rem; }
     footer { padding-top: .5rem; }
