@@ -1,14 +1,128 @@
-/* Custom default button */
-.btn-secondary,
-.btn-secondary:hover,
-.btn-secondary:focus {
-    color: #333;
-    text-shadow: none; /* Prevent inheritance from `body` */
-}
-
 /*
  * Base structure
  */
+
+body {
+    background: #1d2127 !important;
+}
+
+.cover-container {
+    max-width: 42em;
+}
+
+/*
+ * Settings bar
+ */
+
+.settings {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-end;
+    gap: .75rem 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.setting {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .2rem;
+}
+
+.setting > label {
+    font-size: .7rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .5);
+}
+
+.settings .form-select,
+.settings .form-control {
+    background-color: rgba(255, 255, 255, .07);
+    border: 1px solid rgba(255, 255, 255, .15);
+    color: #fff;
+}
+
+.settings .form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba(255,255,255,0.6)' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+}
+
+.settings .form-select option {
+    background-color: #2b3036;
+    color: #fff;
+}
+
+.settings .form-select:focus,
+.settings .form-control:focus,
+.settings .form-check-input:focus {
+    border-color: rgba(255, 255, 255, .4);
+    box-shadow: 0 0 0 .2rem rgba(255, 255, 255, .1);
+}
+
+.settings #memo {
+    width: 4.5rem;
+}
+
+.settings .form-switch {
+    flex-direction: row;
+    align-items: center;
+    gap: .5rem;
+    padding-left: 0;
+    padding-bottom: .3rem;
+}
+
+.settings .form-switch .form-check-input {
+    margin: 0;
+    background-color: rgba(255, 255, 255, .1);
+    border-color: rgba(255, 255, 255, .25);
+}
+
+.settings .form-switch .form-check-input:checked {
+    background-color: #6ea8fe;
+    border-color: #6ea8fe;
+}
+
+.settings .form-switch .form-check-label {
+    font-size: .85rem;
+    text-transform: none;
+    letter-spacing: 0;
+    color: rgba(255, 255, 255, .75);
+}
+
+/*
+ * Board area
+ */
+
+#myBoard {
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .45);
+}
+
+#memoBarContainer {
+    display: none;
+    height: 4px;
+    margin-top: .5rem;
+    background: rgba(255, 255, 255, .1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+#memoBar {
+    height: 100%;
+    width: 100%;
+    background: #6ea8fe;
+}
+
+#pgn {
+    font-variant-numeric: tabular-nums;
+    color: rgba(255, 255, 255, .85);
+}
+
+#pgn strong {
+    color: #fff;
+}
 
 /* Move navigation arrows */
 .nav-arrow,
@@ -26,13 +140,74 @@
     color: #fff;
 }
 
-body {
-    text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
-    box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
+/*
+ * Info column: turn cue, countdown, buttons
+ */
+
+#turn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    max-width: 11rem;
+    font-size: .95rem;
+    line-height: 1.3;
+    color: rgba(255, 255, 255, .8);
+    margin-bottom: 1.25rem;
 }
 
-.cover-container {
-    max-width: 42em;
+#turnDot {
+    flex-shrink: 0;
+    width: .8rem;
+    height: .8rem;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, .6);
+}
+
+#turnDot.white { background: #fff; }
+#turnDot.black { background: #000; }
+
+.countdown-label {
+    font-size: .7rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .5);
+}
+
+#countdown {
+    font-size: 3.5rem;
+    font-weight: 300;
+    font-variant-numeric: tabular-nums;
+}
+
+.btn-action,
+.btn-action:focus {
+    min-width: 8rem;
+    margin-bottom: .75rem;
+    color: #fff;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, .35);
+    box-shadow: none;
+    font-weight: 600;
+}
+
+.btn-action:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, .1);
+    border-color: rgba(255, 255, 255, .6);
+}
+
+.btn-action-primary {
+    background: #fff;
+    color: #212529;
+    border-color: #fff;
+}
+
+.btn-action-primary:hover,
+.btn-action-primary:focus {
+    background: #e9ecef;
+    color: #212529;
+    border-color: #e9ecef;
 }
 
 .highlight-white {
@@ -177,7 +352,8 @@ body {
         justify-content: center;
     }
 
-    .info-display > h3, button {
+    .info-display > h3,
+    .info-display > button {
         margin-right: 1rem !important;
     }
 

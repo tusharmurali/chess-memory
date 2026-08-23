@@ -36,6 +36,10 @@ const $right = $('#right')
 const $correct = $('#correct')
 const $incorrect = $('#incorrect')
 const $pgn = $('#pgn')
+const $turnDot = $('#turnDot')
+const $turnText = $('#turnText')
+const $memoBarContainer = $('#memoBarContainer')
+const $memoBar = $('#memoBar')
 const getImgSrc = piece => `img/chesspieces/${$theme.val()}/{piece}.png`.replace('{piece}', game.turn() + piece.toLocaleUpperCase())
 
 // Functions for Easy Mode
@@ -248,6 +252,10 @@ function getPuzzle(p) {
         orientation = game.turn() === 'b' ? 'white' : 'black'
         history = []
 
+        // show which side the user is playing
+        $turnDot.attr('class', orientation)
+        $turnText.text(`Find the best move for ${orientation === 'white' ? 'White' : 'Black'}`)
+
         $loading.hide()
         $loadingText.hide()
 
@@ -282,9 +290,16 @@ function getPuzzle(p) {
             $easyMode.attr('disabled', true)
             $again.show()
             $giveUp.show()
+            $memoBarContainer.hide()
         }, 1000 * $memo.val())
 
         $countdownContainer.show()
+
+        // drain the memorization bar over the memorization time
+        $memoBarContainer.show()
+        $memoBar.css({ transition: 'none', width: '100%' })
+        $memoBar[0].offsetWidth // force reflow so the reset width applies before animating
+        $memoBar.css({ transition: `width ${$memo.val()}s linear`, width: '0%' })
 
         // start countdown
         let countdown = $memo.val()
@@ -347,6 +362,10 @@ const config = {
 // Prevent page scrolling when dragging pieces on mobile
 
 $board.on('scroll touchmove touchend touchstart contextmenu', event => event.preventDefault())
+
+// Keep the board fitted to its container when the window is resized
+
+$(window).on('resize', () => board?.resize())
 
 // Persist memorization time by binding to local storage
 

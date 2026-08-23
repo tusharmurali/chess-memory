@@ -17,52 +17,41 @@
 <body class="d-flex h-100 text-center text-white bg-dark">
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
         <header class="mb-auto">
-            <div>
-                <h3 class="float-md-center mb-3">ChessMemory <i class="bi bi-question-circle-fill tooltips" style="font-size: 15px"><span class="tooltiptext">Memorize the position shown. Once the pieces disappear, solve the puzzle by dragging the pieces as if they were on the board.</span></i></h3>
-                <nav class="nav nav-masthead justify-content-center float-md-end">
-                    <div class="col">
-                        <span>
-                            <label for="theme">Piece theme:</label>
-                        <select id="theme">
-                            <option value="wikipedia">Default</option>
-                            <option value="alpha">Alpha</option>
-                            <option value="uscf">USCF</option>
-                        </select>
-                        </span>
-                    </div>
-                    <div class="col">
-                        <div class="span">
-                            <label for="rating">Puzzle rating:</label>
-                            <select id="rating">
-                                <option value="600-799">600-799</option>
-                                <option value="800-999">800-999</option>
-                                <option value="1000-1199">1000-1199</option>
-                                <option value="1200-1399">1200-1399</option>
-                                <option value="1400-1599">1400-1599</option>
-                                <option value="1600-1799">1600-1799</option>
-                                <option value="1800-1999">1800-1999</option>
-                                <option value="2000-2199">2000-2199</option>
-                                <option value="2200-2399">2200-2399</option>
-                                <option value="2400-2599">2400-2599</option>
-                                <option value="2600-2799">2600-2799</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="w-100"></div>
-                    <div class="col">
-                        <div class="span">
-                            <label for="easyMode">Easy mode:</label>
-                            <input type="checkbox" id="easyMode">
-                        </div>
-                    </div>
-                    <div class="col">
-                        <span>
-                            <label for="memo">Memorization time (s):</label>
-                            <input id="memo" type="number" min="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57" style="max-width: 50px">
-                        </span>
-                    </div>
-                </nav>
-            </div>
+            <h3 class="mb-3">ChessMemory <i class="bi bi-question-circle-fill tooltips" style="font-size: 15px"><span class="tooltiptext">Memorize the position shown. Once the pieces disappear, solve the puzzle as if the pieces were on the board.</span></i></h3>
+            <nav class="settings">
+                <div class="setting">
+                    <label for="theme">Pieces</label>
+                    <select id="theme" class="form-select form-select-sm">
+                        <option value="wikipedia">Default</option>
+                        <option value="alpha">Alpha</option>
+                        <option value="uscf">USCF</option>
+                    </select>
+                </div>
+                <div class="setting">
+                    <label for="rating">Rating</label>
+                    <select id="rating" class="form-select form-select-sm">
+                        <option value="600-799">600-799</option>
+                        <option value="800-999">800-999</option>
+                        <option value="1000-1199">1000-1199</option>
+                        <option value="1200-1399">1200-1399</option>
+                        <option value="1400-1599">1400-1599</option>
+                        <option value="1600-1799">1600-1799</option>
+                        <option value="1800-1999">1800-1999</option>
+                        <option value="2000-2199">2000-2199</option>
+                        <option value="2200-2399">2200-2399</option>
+                        <option value="2400-2599">2400-2599</option>
+                        <option value="2600-2799">2600-2799</option>
+                    </select>
+                </div>
+                <div class="setting">
+                    <label for="memo">Memorize (s)</label>
+                    <input id="memo" type="number" min="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57" class="form-control form-control-sm">
+                </div>
+                <div class="setting form-check form-switch">
+                    <input type="checkbox" id="easyMode" class="form-check-input" role="switch">
+                    <label for="easyMode" class="form-check-label">Easy mode</label>
+                </div>
+            </nav>
         </header>
         <main class="px-3">
             <div class="row">
@@ -84,15 +73,18 @@
                         </ol>
                     </div>
                     <div id="myBoard" class="d-flex justify-content-center"></div>
-                    <div class="d-flex flex-row justify-content-between mt-2">
-                        <button id="left" type="button" onclick="document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 37 }))" class="btn btn-sm nav-arrow fw-bold mb-3 align-self-center"><i class="bi bi-chevron-left"></i></button>
-                        <div id="pgn" class="mb-1"></div>
-                        <button id="right" type="button" onclick="document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 39 }))" class="btn btn-sm nav-arrow fw-bold mb-3 align-self-center"><i class="bi bi-chevron-right"></i></button>
+                    <div id="memoBarContainer"><div id="memoBar"></div></div>
+                    <div class="d-flex flex-row justify-content-between align-items-center mt-2">
+                        <button id="left" type="button" onclick="document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 37 }))" class="btn btn-sm nav-arrow fw-bold"><i class="bi bi-chevron-left"></i></button>
+                        <div id="pgn"></div>
+                        <button id="right" type="button" onclick="document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 39 }))" class="btn btn-sm nav-arrow fw-bold"><i class="bi bi-chevron-right"></i></button>
                     </div>
                 </div>
                 <div class="w-100 info-divider"></div>
                 <div class="col align-self-center">
+                    <div id="turn"><span id="turnDot"></span><span id="turnText"></span></div>
                     <div id="countdownContainer">
+                        <div class="countdown-label">Memorize</div>
                         <h1 id="countdown" class="text-white mb-3"></h1>
                     </div>
                     <div class="d-flex info-display">
@@ -106,10 +98,10 @@
                             <br>
                             Incorrect
                         </h3>
-                        <button id="again" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white mb-3 align-self-center">Again</button>
-                        <button id="giveUp" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white mb-3 align-self-center">Give Up</button>
-                        <button id="retry" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white mb-3 align-self-center">Retry</button>
-                        <button id="next" type="button" class="btn btn-md btn-secondary fw-bold border-white bg-white mb-3 align-self-center">Next</button>
+                        <button id="again" type="button" class="btn btn-action">Again</button>
+                        <button id="giveUp" type="button" class="btn btn-action">Give Up</button>
+                        <button id="retry" type="button" class="btn btn-action">Retry</button>
+                        <button id="next" type="button" class="btn btn-action btn-action-primary">Next</button>
                     </div>
                 </div>
             </div>
