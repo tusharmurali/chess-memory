@@ -17,7 +17,8 @@
 <body class="d-flex h-100 text-center text-white bg-dark">
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
         <header class="mb-auto">
-            <h3 class="mb-3">ChessMemory <i class="bi bi-question-circle-fill tooltips" style="font-size: 15px"><span class="tooltiptext">Memorize the position shown. Once the pieces disappear, solve the puzzle as if the pieces were on the board.</span></i></h3>
+            <h3 class="mb-1">ChessMemory</h3>
+            <p class="subtitle">Memorize the position. When the pieces disappear, solve the puzzle from memory.</p>
             <nav class="settings">
                 <div class="setting">
                     <label for="theme">Pieces</label>
@@ -75,9 +76,9 @@
                     <div id="myBoard" class="d-flex justify-content-center"></div>
                     <div id="memoBarContainer"><div id="memoBar"></div></div>
                     <div class="d-flex flex-row justify-content-between align-items-center mt-2">
-                        <button id="left" type="button" onclick="document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 37 }))" class="btn btn-sm nav-arrow fw-bold"><i class="bi bi-chevron-left"></i></button>
+                        <button id="left" type="button" onclick="document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 37 }))" class="btn btn-sm nav-arrow fw-bold" aria-label="Previous move"><i class="bi bi-chevron-left"></i></button>
                         <div id="pgn"></div>
-                        <button id="right" type="button" onclick="document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 39 }))" class="btn btn-sm nav-arrow fw-bold"><i class="bi bi-chevron-right"></i></button>
+                        <button id="right" type="button" onclick="document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 39 }))" class="btn btn-sm nav-arrow fw-bold" aria-label="Next move"><i class="bi bi-chevron-right"></i></button>
                     </div>
                 </div>
                 <div class="w-100 info-divider"></div>
@@ -98,11 +99,12 @@
                             <br>
                             Incorrect
                         </h3>
-                        <button id="again" type="button" class="btn btn-action">Again</button>
+                        <button id="again" type="button" class="btn btn-action"><i class="bi bi-eye"></i> Show again</button>
                         <button id="giveUp" type="button" class="btn btn-action">Give Up</button>
                         <button id="retry" type="button" class="btn btn-action">Retry</button>
                         <button id="next" type="button" class="btn btn-action btn-action-primary">Next</button>
                     </div>
+                    <div id="shortcutHint" class="shortcut-hint"><kbd>Enter</kbd> next &nbsp;·&nbsp; <kbd>R</kbd> retry</div>
                 </div>
             </div>
         </main>

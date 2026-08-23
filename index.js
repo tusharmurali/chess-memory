@@ -31,6 +31,7 @@ const $again = $('#again')
 const $giveUp = $('#giveUp')
 const $retry = $('#retry')
 const $next = $('#next')
+const $shortcutHint = $('#shortcutHint')
 const $left = $('#left')
 const $right = $('#right')
 const $correct = $('#correct')
@@ -143,6 +144,7 @@ function onDrop(source, target) {
         $easyMode.attr('disabled', false)
         $(`img[data-piece^=${orientation.charAt(0)}]`).css('cursor', 'auto')
         $next.show()
+        $shortcutHint.show()
         $left.css('visibility', 'visible')
         $right.css('visibility', 'visible')
 
@@ -172,6 +174,7 @@ function onSnapEnd() {
         $easyMode.attr('disabled', false)
         $(`img[data-piece^=${orientation.charAt(0)}]`).css('cursor', 'auto')
         $next.show()
+        $shortcutHint.show()
         $left.css('visibility', 'visible')
         $right.css('visibility', 'visible')
 
@@ -235,17 +238,32 @@ function updateStatus(prefix) {
     }
 }
 
+// Parsed puzzle rows, keyed by rating band, so each CSV is only fetched and split once
+const puzzleCache = {}
+
+function loadPuzzles(rating) {
+    if (puzzleCache[rating]) return Promise.resolve(puzzleCache[rating])
+
+    $loading.show()
+    $loadingText.show()
+    return $.get('lichess_db_puzzle/' + rating + '.csv').then(csv => {
+        puzzleCache[rating] = csv.trimEnd().split('\n')
+        return puzzleCache[rating]
+    })
+}
+
 /**
  * Generate a new puzzle
- * @param {string} [p] - puzzle ID, if already known
+ * @param {string[]} [p] - puzzle row, if already known
  */
 
 function getPuzzle(p) {
-    $.get('lichess_db_puzzle/' + $rating.val() + '.csv', csv => {
-        const data = csv.split('\n')
+    const ready = p
+        ? Promise.resolve(p)
+        : loadPuzzles($rating.val()).then(data => data[Math.floor(Math.random() * data.length)].split(','))
 
-        // get random puzzle or p, if already known
-        puzzle = p ?? data[Math.floor(Math.random() * data.length)].split(',')
+    ready.then(row => {
+        puzzle = row
 
         game.load(puzzle[1])
         moves = puzzle[2].split(' ')
@@ -276,7 +294,7 @@ function getPuzzle(p) {
         board.position(game.fen())
 
         updateStatus()
-    }).then(() => {
+
         // queue remove pieces after memorization time
         setTimeout(() => {
             board = Chessboard('myBoard', {
@@ -454,6 +472,7 @@ $giveUp.click(() => {
     $easyMode.attr('disabled', false)
     $(`img[data-piece^=${orientation.charAt(0)}]`).css('cursor', 'auto')
     $next.show()
+    $shortcutHint.show()
 })
 
 $retry.hide()
@@ -464,11 +483,14 @@ $retry.click(() => {
     $incorrect.hide()
     $retry.hide()
     $next.hide()
+    $shortcutHint.hide()
     $left.css('visibility', 'hidden')
     $right.css('visibility', 'hidden')
 })
 
 $next.hide()
+
+$shortcutHint.hide()
 $next.click(() => {
     clearTimeouts()
     getPuzzle()
@@ -476,6 +498,7 @@ $next.click(() => {
     $incorrect.hide()
     $retry.hide()
     $next.hide()
+    $shortcutHint.hide()
     $left.css('visibility', 'hidden')
     $right.css('visibility', 'hidden')
 })
@@ -491,8 +514,23 @@ $incorrect.hide()
 // Allow toggling back and forth between moves after puzzle ended using arrow keys
 
 $(document).keydown(function (e) {
-    // ignore arrow keys used to edit form controls
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return
+    // ignore keys used to operate form controls (and let focused buttons handle Enter/Space natively)
+    const tag = e.target.tagName
+    if (tag === 'INPUT' || tag === 'SELECT') return
+    if (tag === 'BUTTON' && (e.keyCode === 13 || e.keyCode === 32)) return
+
+    // shortcuts once the puzzle has ended: Enter/Space for next, R for retry
+    if ($next.is(':visible')) {
+        if (e.keyCode === 13 || e.keyCode === 32) {
+            e.preventDefault()
+            $next.click()
+            return
+        }
+        if (e.keyCode === 82) {
+            $retry.click()
+            return
+        }
+    }
 
     const move = game.undo()
     if (move) game.move(move)
