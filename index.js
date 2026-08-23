@@ -245,6 +245,7 @@ function getPuzzle(p) {
         game.load(puzzle[1])
         moves = puzzle[2].split(' ')
         orientation = game.turn() === 'b' ? 'white' : 'black'
+        history = []
 
         $loading.hide()
         $loadingText.hide()
@@ -409,7 +410,6 @@ $rating.on('change', () => {
 
 $again.hide()
 $again.click(() => {
-    // marker
     clearTimeouts()
     getPuzzle(puzzle)
     $again.hide()
@@ -471,25 +471,26 @@ $incorrect.hide()
 // Allow toggling back and forth between moves after puzzle ended using arrow keys
 
 $(document).keydown(function (e) {
+    // ignore arrow keys used to edit form controls
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return
+
     const move = game.undo()
-    game.move(move)
+    if (move) game.move(move)
 
     if (history.length === 0 && (!move || move.from + move.to + (move.promotion ?? '') !== moves[moves.length - 1])) return
 
     if (e.keyCode === 37) {
-        console.log(game.pgn())
         const m1 = game.undo()
         const m2 = game.undo()
-        console.log(m1, m2)
         if (!m2) {
-            game.move(m1)
+            if (m1) game.move(m1)
             return
         }
-        console.log('here')
         game.move(m2)
         history.push(m1)
         board.position(game.fen())
     } else if (e.keyCode === 39) {
+        if (history.length === 0) return
         game.move(history.pop())
         board.position(game.fen())
     } else {
@@ -497,8 +498,14 @@ $(document).keydown(function (e) {
     }
     let html = $pgn.html().replaceAll('<strong>', '')
     html = html.replaceAll('</strong>', '')
-    const end = html.split(getStatus())[1] ?? ''
-    const start = html.slice(0, -end.length)
+    // the displayed pgn may have its leading move number trimmed (status shown with a prefix)
+    let status = getStatus()
+    if (!html.includes(status)) {
+        const dots = status.indexOf('...')
+        if (dots !== -1) status = status.substring(dots + 4)
+    }
+    const end = html.split(status)[1] ?? ''
+    const start = html.slice(0, html.length - end.length)
     const past = start.split(' ')
     const bold = past[past.length - 1]
     if (bold.trim().length === 0) {
