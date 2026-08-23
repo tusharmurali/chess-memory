@@ -112,8 +112,9 @@ function onDrop(source, target) {
     if (move.captured) captureSound.play()
     else moveSound.play()
 
-    // incorrect move
-    if ((!moves[counter].includes(source + target) && !game.in_checkmate()) || (promoting && !moves[counter].endsWith(promotingTo))) {
+    // incorrect move, unless it delivers checkmate (any mating move counts, including alternative promotions)
+    const wrongMove = !moves[counter].includes(source + target) || (promoting && !moves[counter].endsWith(promotingTo))
+    if (wrongMove && !game.in_checkmate()) {
         const movesToNow = game.pgn().split('\n').splice(3)[0]
 
         // display position after incorrect move
