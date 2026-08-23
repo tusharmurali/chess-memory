@@ -218,7 +218,7 @@ kbd {
     width: 100%;
     /* fit the board to the viewport height: 100vh minus the vertical chrome around the board
        (header, status row, move row, action buttons, footer, padding), never below 240px */
-    max-width: max(240px, min(450px, calc(100vh - 23rem)));
+    max-width: max(240px, min(450px, calc(100vh - 26.5rem)));
     margin: 1rem auto 0;
 }
 
@@ -226,8 +226,8 @@ kbd {
 @media (max-height: 720px) {
     .subtitle { font-size: .8rem; }
     .app { padding-top: .5rem; padding-bottom: .5rem; }
-    .puzzle { max-width: max(240px, min(450px, calc(100vh - 20rem))); margin-top: .5rem; }
-    .status-row { min-height: 2.2rem; margin-bottom: .25rem; }
+    .puzzle { max-width: max(240px, min(450px, calc(100vh - 23.5rem))); margin-top: .5rem; }
+    .status-row { margin-bottom: .25rem; }
     .actions { margin-top: .5rem; }
     footer { padding-top: .5rem; }
 }
@@ -251,7 +251,7 @@ kbd {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    min-height: 2.6rem;
+    height: 3.2rem; /* fixed so the board never moves when the countdown comes and goes */
     margin-bottom: .5rem;
     text-align: left;
 }
@@ -317,7 +317,7 @@ kbd {
 }
 
 #memoBarContainer {
-    display: none;
+    visibility: hidden; /* space is always reserved so nothing below the board shifts */
     height: 4px;
     margin-top: .5rem;
     background: var(--line);
@@ -369,7 +369,7 @@ kbd {
 
 .actions {
     margin-top: 1rem;
-    min-height: 5rem;
+    min-height: 6.5rem;
 }
 
 .result {

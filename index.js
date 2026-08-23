@@ -308,7 +308,7 @@ function getPuzzle(p) {
         $countdownContainer.show()
 
         // drain the memorization bar over the memorization time
-        $memoBarContainer.show()
+        $memoBarContainer.css('visibility', 'visible')
         $memoBar.css({ transition: 'none', width: '100%' })
         $memoBar[0].offsetWidth // force reflow so the reset width applies before animating
         $memoBar.css({ transition: `width ${$memo.val()}s linear`, width: '0%' })
@@ -343,7 +343,7 @@ function hidePieces() {
     $easyMode.attr('disabled', true)
     $again.show()
     $giveUp.show()
-    $memoBarContainer.hide()
+    $memoBarContainer.css('visibility', 'hidden')
     $turn.hide()
 }
 
@@ -418,7 +418,10 @@ function setSettingsOpen(open) {
     $settings.toggleClass('open', open)
     $settingsToggle.attr('aria-expanded', open)
 }
-$settingsToggle.click(() => setSettingsOpen(!$settings.hasClass('open')))
+$settingsToggle.click(function () {
+    setSettingsOpen(!$settings.hasClass('open'))
+    this.blur() // so Space/Enter afterwards go to the puzzle shortcuts, not this button
+})
 // close the popover when clicking elsewhere or pressing Escape
 $(document).on('click', e => {
     if (!$(e.target).closest('#settings, #settingsToggle').length) setSettingsOpen(false)
@@ -435,10 +438,11 @@ function applyScheme(scheme) {
     $schemeToggle.find('i').attr('class', scheme === 'light' ? 'bi bi-moon-stars' : 'bi bi-sun')
 }
 applyScheme(localStorage.getItem('scheme') ?? 'dark')
-$schemeToggle.click(() => {
+$schemeToggle.click(function () {
     const scheme = document.documentElement.dataset.scheme === 'light' ? 'dark' : 'light'
     applyScheme(scheme)
     localStorage.setItem('scheme', scheme)
+    this.blur()
 })
 
 // Persist memorization time by binding to local storage
