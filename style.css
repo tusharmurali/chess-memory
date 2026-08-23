@@ -47,7 +47,7 @@ body {
 
 .app {
     position: relative;
-    max-width: 34rem;
+    max-width: max(34rem, calc(var(--board-size, 450px) + 2rem));
     padding: 1rem;
 }
 
@@ -238,16 +238,21 @@ kbd {
 
 .puzzle {
     width: 100%;
-    /* fit the board to the viewport height: 100vh minus the vertical chrome around the board
-       (header, status row, move row, action buttons, footer, padding), never below 240px */
-    max-width: max(240px, min(var(--board-size, 450px), calc(100vh - 21rem)));
+    max-width: var(--board-size, 450px);
     margin: 1rem auto 0;
+}
+
+/* "Fit board to screen": size the board to the viewport height, i.e. 100vh minus the vertical
+   chrome around the board (header, status row, move row, action buttons, footer, padding) */
+html[data-fit] .puzzle {
+    max-width: max(240px, min(100%, calc(100vh - 21rem)));
 }
 
 /* on short screens tighten spacing so the board gets more room */
 @media (max-height: 720px) {
     .app { padding-top: .5rem; padding-bottom: .5rem; }
-    .puzzle { max-width: max(240px, min(var(--board-size, 450px), calc(100vh - 18.5rem))); margin-top: .5rem; }
+    .puzzle { margin-top: .5rem; }
+    html[data-fit] .puzzle { max-width: max(240px, min(100%, calc(100vh - 18.5rem))); }
     .actions { margin-top: .5rem; }
     footer { padding-top: .5rem; }
 }

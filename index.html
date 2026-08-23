@@ -56,9 +56,13 @@
                 <label for="memo">Memorize (s)</label>
                 <input id="memo" type="number" min="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57" class="form-control form-control-sm">
             </div>
-            <div class="setting">
+            <div class="setting form-check form-switch">
+                <input type="checkbox" id="fitBoard" class="form-check-input" role="switch">
+                <label for="fitBoard" class="form-check-label">Fit board to screen</label>
+            </div>
+            <div class="setting" id="boardSizeSetting">
                 <label for="boardSize">Board size <span id="boardSizeValue"></span></label>
-                <input type="range" id="boardSize" min="280" max="640" step="10" class="form-range">
+                <input type="range" id="boardSize" min="280" max="800" step="10" class="form-range">
             </div>
             <div class="setting form-check form-switch">
                 <input type="checkbox" id="easyMode" class="form-check-input" role="switch">

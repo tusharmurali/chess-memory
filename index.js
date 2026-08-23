@@ -445,20 +445,31 @@ $schemeToggle.click(function () {
     this.blur()
 })
 
-// Board size, persisted to local storage (still capped by the viewport in CSS)
+// Board size: either fitted to the screen (default) or an explicit size from the slider
 
+const $fitBoard = $('#fitBoard')
 const $boardSize = $('#boardSize')
+const $boardSizeSetting = $('#boardSizeSetting')
 const $boardSizeValue = $('#boardSizeValue')
-function applyBoardSize(px) {
-    document.documentElement.style.setProperty('--board-size', px + 'px')
-    $boardSizeValue.text(px + 'px')
+function applyBoardSize() {
+    const fit = $fitBoard.is(':checked')
+    if (fit) document.documentElement.dataset.fit = ''
+    else delete document.documentElement.dataset.fit
+    $boardSizeSetting.toggle(!fit)
+    document.documentElement.style.setProperty('--board-size', $boardSize.val() + 'px')
+    $boardSizeValue.text($boardSize.val() + 'px')
     board?.resize()
 }
+$fitBoard.prop('checked', (localStorage.getItem('fitBoard') ?? 'true') === 'true')
 $boardSize.val(localStorage.getItem('boardSize') ?? 450)
-applyBoardSize($boardSize.val())
+applyBoardSize()
+$fitBoard.on('change', () => {
+    localStorage.setItem('fitBoard', $fitBoard.is(':checked'))
+    applyBoardSize()
+})
 $boardSize.on('input', () => {
-    applyBoardSize($boardSize.val())
     localStorage.setItem('boardSize', $boardSize.val())
+    applyBoardSize()
 })
 
 // Persist memorization time by binding to local storage
