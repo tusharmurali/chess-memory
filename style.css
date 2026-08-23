@@ -216,8 +216,20 @@ kbd {
 
 .puzzle {
     width: 100%;
-    max-width: 450px;
-    margin: 1.25rem auto 0;
+    /* fit the board to the viewport height: 100vh minus the vertical chrome around the board
+       (header, status row, move row, action buttons, footer, padding), never below 240px */
+    max-width: max(240px, min(450px, calc(100vh - 23rem)));
+    margin: 1rem auto 0;
+}
+
+/* on short screens drop the subtitle and tighten spacing so the board gets more room */
+@media (max-height: 720px) {
+    .subtitle { display: none; }
+    .app { padding-top: .5rem; padding-bottom: .5rem; }
+    .puzzle { max-width: max(240px, min(450px, calc(100vh - 19rem))); margin-top: .5rem; }
+    .status-row { min-height: 2.2rem; margin-bottom: .25rem; }
+    .actions { margin-top: .5rem; }
+    footer { padding-top: .5rem; }
 }
 
 .loading {
