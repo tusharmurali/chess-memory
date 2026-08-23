@@ -76,9 +76,13 @@ kbd {
 
 .topbar {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     gap: .5rem;
+}
+
+.brand h3 {
+    font-size: 1.5rem;
 }
 
 .topbar-side {
@@ -97,9 +101,9 @@ kbd {
 }
 
 .subtitle {
-    font-size: .85rem;
+    font-size: .8rem;
     color: var(--muted);
-    margin: .25rem 0 0;
+    margin: .15rem 0 0;
 }
 
 .icon-btn {
@@ -184,6 +188,24 @@ kbd {
 }
 
 
+.settings .form-range {
+    accent-color: var(--accent);
+}
+
+.settings .form-range::-webkit-slider-runnable-track {
+    background: var(--line);
+}
+
+.settings .form-range::-moz-range-track {
+    background: var(--line);
+}
+
+#boardSizeValue {
+    text-transform: none;
+    letter-spacing: 0;
+    margin-left: .25rem;
+}
+
 .settings .form-switch {
     flex-direction: row;
     align-items: center;
@@ -218,16 +240,14 @@ kbd {
     width: 100%;
     /* fit the board to the viewport height: 100vh minus the vertical chrome around the board
        (header, status row, move row, action buttons, footer, padding), never below 240px */
-    max-width: max(240px, min(450px, calc(100vh - 26.5rem)));
+    max-width: max(240px, min(var(--board-size, 450px), calc(100vh - 21rem)));
     margin: 1rem auto 0;
 }
 
 /* on short screens tighten spacing so the board gets more room */
 @media (max-height: 720px) {
-    .subtitle { font-size: .8rem; }
     .app { padding-top: .5rem; padding-bottom: .5rem; }
-    .puzzle { max-width: max(240px, min(450px, calc(100vh - 23.5rem))); margin-top: .5rem; }
-    .status-row { margin-bottom: .25rem; }
+    .puzzle { max-width: max(240px, min(var(--board-size, 450px), calc(100vh - 18.5rem))); margin-top: .5rem; }
     .actions { margin-top: .5rem; }
     footer { padding-top: .5rem; }
 }
@@ -250,10 +270,14 @@ kbd {
 .status-row {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
-    height: 3.2rem; /* fixed so the board never moves when the countdown comes and goes */
-    margin-bottom: .5rem;
+    align-items: center;
+    height: 2rem; /* fixed so the board never moves when the countdown comes and goes */
+    margin-bottom: .25rem;
     text-align: left;
+}
+
+.status-right {
+    text-align: right;
 }
 
 #turn {
@@ -262,7 +286,6 @@ kbd {
     gap: .45rem;
     font-size: .8rem;
     color: var(--muted);
-    padding-bottom: .15rem;
 }
 
 #turnDot {
@@ -277,16 +300,11 @@ kbd {
 #turnDot.black { background: #000; }
 
 #countdownContainer {
-    text-align: right;
-    cursor: pointer;
-    user-select: none;
-}
-
-.countdown-main {
     display: flex;
     align-items: baseline;
-    justify-content: flex-end;
     gap: .5rem;
+    cursor: pointer;
+    user-select: none;
 }
 
 .countdown-label {
@@ -297,7 +315,7 @@ kbd {
 }
 
 #countdown {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     font-weight: 300;
     line-height: 1;
     font-variant-numeric: tabular-nums;
@@ -306,6 +324,7 @@ kbd {
 .countdown-skip {
     font-size: .7rem;
     color: var(--faint);
+    margin-left: .25rem;
 }
 
 #myBoard {
@@ -368,14 +387,13 @@ kbd {
  */
 
 .actions {
-    margin-top: 1rem;
-    min-height: 6.5rem;
+    margin-top: .75rem;
+    min-height: 4rem;
 }
 
 .result {
-    font-size: 1.1rem;
+    font-size: .95rem;
     font-weight: 600;
-    margin-bottom: .75rem;
 }
 
 .result-correct { color: #3fb950; }

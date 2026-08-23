@@ -20,13 +20,13 @@
             <div class="topbar-side"></div>
             <div class="brand">
                 <h3 class="mb-0">ChessMemory</h3>
-                <p class="subtitle">Memorize the position. When the pieces disappear, solve the puzzle from memory.</p>
             </div>
             <div class="topbar-side topbar-actions">
                 <button id="schemeToggle" type="button" class="icon-btn" aria-label="Toggle light or dark mode"><i class="bi bi-sun"></i></button>
                 <button id="settingsToggle" type="button" class="icon-btn" aria-label="Settings" aria-expanded="false"><i class="bi bi-gear"></i></button>
             </div>
         </header>
+        <p class="subtitle">Memorize the position. When the pieces disappear, solve the puzzle from memory.</p>
         <nav id="settings" class="settings">
             <div class="setting">
                 <label for="theme">Pieces</label>
@@ -56,6 +56,10 @@
                 <label for="memo">Memorize (s)</label>
                 <input id="memo" type="number" min="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57" class="form-control form-control-sm">
             </div>
+            <div class="setting">
+                <label for="boardSize">Board size <span id="boardSizeValue"></span></label>
+                <input type="range" id="boardSize" min="280" max="640" step="10" class="form-range">
+            </div>
             <div class="setting form-check form-switch">
                 <input type="checkbox" id="easyMode" class="form-check-input" role="switch">
                 <label for="easyMode" class="form-check-label">Easy mode</label>
@@ -76,9 +80,12 @@
             </div>
             <div class="status-row">
                 <div id="turn"><span id="turnDot"></span><span id="turnText"></span></div>
-                <div id="countdownContainer">
-                    <div class="countdown-main"><span class="countdown-label">Memorize</span><span id="countdown"></span></div>
-                    <div class="countdown-skip">click or <kbd>Space</kbd> to skip</div>
+                <div class="status-right">
+                    <div id="countdownContainer">
+                        <span class="countdown-label">Memorize</span><span id="countdown"></span><span class="countdown-skip">click or <kbd>Space</kbd> to skip</span>
+                    </div>
+                    <div id="correct" class="result result-correct"><i class="bi bi-check-circle-fill"></i> Correct!</div>
+                    <div id="incorrect" class="result result-incorrect"><i class="bi bi-x-circle-fill"></i> Incorrect</div>
                 </div>
             </div>
             <div id="myBoard"></div>
@@ -89,8 +96,6 @@
                 <button id="right" type="button" onclick="document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 39 }))" class="btn btn-sm nav-arrow" aria-label="Next move"><i class="bi bi-chevron-right"></i></button>
             </div>
             <div class="actions">
-                <div id="correct" class="result result-correct"><i class="bi bi-check-circle-fill"></i> Correct!</div>
-                <div id="incorrect" class="result result-incorrect"><i class="bi bi-x-circle-fill"></i> Incorrect</div>
                 <div class="info-display">
                     <button id="again" type="button" class="btn btn-action"><i class="bi bi-eye"></i> Show again</button>
                     <button id="giveUp" type="button" class="btn btn-action">Give up</button>

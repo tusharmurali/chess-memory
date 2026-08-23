@@ -445,6 +445,22 @@ $schemeToggle.click(function () {
     this.blur()
 })
 
+// Board size, persisted to local storage (still capped by the viewport in CSS)
+
+const $boardSize = $('#boardSize')
+const $boardSizeValue = $('#boardSizeValue')
+function applyBoardSize(px) {
+    document.documentElement.style.setProperty('--board-size', px + 'px')
+    $boardSizeValue.text(px + 'px')
+    board?.resize()
+}
+$boardSize.val(localStorage.getItem('boardSize') ?? 450)
+applyBoardSize($boardSize.val())
+$boardSize.on('input', () => {
+    applyBoardSize($boardSize.val())
+    localStorage.setItem('boardSize', $boardSize.val())
+})
+
 // Persist memorization time by binding to local storage
 
 const memo = localStorage.getItem('memo')
