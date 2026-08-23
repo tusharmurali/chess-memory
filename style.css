@@ -16,11 +16,24 @@ body {
     margin-bottom: 1rem;
 }
 
+.info-col {
+    min-width: 0;
+}
+
 .shortcut-hint {
     font-size: .75rem;
-    white-space: nowrap;
     margin-top: .25rem;
     color: rgba(255, 255, 255, .4);
+}
+
+.shortcut-hint span,
+.countdown-skip span {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.shortcut-hint span {
+    margin: 0 .3rem;
 }
 
 .shortcut-hint kbd {
@@ -200,6 +213,26 @@ body {
     font-size: 3.5rem;
     font-weight: 300;
     font-variant-numeric: tabular-nums;
+}
+
+#countdownContainer {
+    cursor: pointer;
+    user-select: none;
+    margin-bottom: 1rem;
+}
+
+.countdown-skip {
+    font-size: .75rem;
+    color: rgba(255, 255, 255, .4);
+}
+
+.countdown-skip kbd {
+    font-size: .7rem;
+    padding: .1rem .35rem;
+    background: rgba(255, 255, 255, .1);
+    border: 1px solid rgba(255, 255, 255, .2);
+    border-radius: 3px;
+    color: rgba(255, 255, 255, .7);
 }
 
 .btn-action,

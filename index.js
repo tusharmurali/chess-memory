@@ -301,20 +301,7 @@ function getPuzzle(p) {
         updateStatus()
 
         // queue remove pieces after memorization time
-        setTimeout(() => {
-            board = Chessboard('myBoard', {
-                ...config,
-                orientation,
-                draggable: true,
-                position: game.fen(),
-                pieceTheme: 'img/chesspieces/blindfold.png'
-            })
-            $(`img[data-piece^=${game.turn()}]`).css('cursor', 'pointer')
-            $easyMode.attr('disabled', true)
-            $again.show()
-            $giveUp.show()
-            $memoBarContainer.hide()
-        }, 1000 * $memo.val())
+        memoTimeout = setTimeout(hidePieces, 1000 * $memo.val())
 
         $countdownContainer.show()
 
@@ -327,15 +314,46 @@ function getPuzzle(p) {
         // start countdown
         let countdown = $memo.val()
         $countdown.html(countdown)
-        const interval = setInterval(() => {
+        countdownInterval = setInterval(() => {
             if (countdown == 1) {
                 $countdownContainer.hide()
-                clearInterval(interval)
+                clearInterval(countdownInterval)
             }
             $countdown.html(--countdown)
         }, 1000)
     })
 }
+
+// Functions for the memorization phase
+
+let memoTimeout = null
+let countdownInterval = null
+
+function hidePieces() {
+    board = Chessboard('myBoard', {
+        ...config,
+        orientation,
+        draggable: true,
+        position: game.fen(),
+        pieceTheme: 'img/chesspieces/blindfold.png'
+    })
+    $(`img[data-piece^=${game.turn()}]`).css('cursor', 'pointer')
+    $easyMode.attr('disabled', true)
+    $again.show()
+    $giveUp.show()
+    $memoBarContainer.hide()
+}
+
+// Let the user end memorization early by tapping the countdown or pressing Space
+function skipMemorization() {
+    if ($countdownContainer.is(':hidden')) return
+    clearTimeout(memoTimeout)
+    clearInterval(countdownInterval)
+    $countdownContainer.hide()
+    hidePieces()
+}
+
+$countdownContainer.click(skipMemorization)
 
 // Functions for showing sequence of moves in puzzle solution
 
@@ -522,6 +540,13 @@ $(document).keydown(function (e) {
     const tag = e.target.tagName
     if (tag === 'INPUT' || tag === 'SELECT') return
     if (tag === 'BUTTON' && (e.keyCode === 13 || e.keyCode === 32)) return
+
+    // Space/Enter during memorization hides the pieces early
+    if ($countdownContainer.is(':visible') && (e.keyCode === 13 || e.keyCode === 32)) {
+        e.preventDefault()
+        skipMemorization()
+        return
+    }
 
     // shortcuts once the puzzle has ended: Enter/Space for next, R for retry
     if ($next.is(':visible')) {

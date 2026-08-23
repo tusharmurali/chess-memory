@@ -82,11 +82,12 @@
                     </div>
                 </div>
                 <div class="w-100 info-divider"></div>
-                <div class="col align-self-center">
+                <div class="col info-col align-self-center">
                     <div id="turn"><span id="turnDot"></span><span id="turnText"></span></div>
                     <div id="countdownContainer">
                         <div class="countdown-label">Memorize</div>
-                        <h1 id="countdown" class="text-white mb-3"></h1>
+                        <h1 id="countdown" class="text-white mb-1"></h1>
+                        <div class="countdown-skip"><span>tap or <kbd>Space</kbd></span> <span>to skip</span></div>
                     </div>
                     <div class="d-flex info-display">
                         <h3 id="correct" class="text-success mb-3">
@@ -104,7 +105,7 @@
                         <button id="retry" type="button" class="btn btn-action">Retry</button>
                         <button id="next" type="button" class="btn btn-action btn-action-primary">Next</button>
                     </div>
-                    <div id="shortcutHint" class="shortcut-hint"><kbd>Enter</kbd> next &nbsp;·&nbsp; <kbd>R</kbd> retry</div>
+                    <div id="shortcutHint" class="shortcut-hint"><span><kbd>Enter</kbd> next</span> <span><kbd>R</kbd> retry</span></div>
                 </div>
             </div>
         </main>
