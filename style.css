@@ -46,6 +46,7 @@ body {
 }
 
 .app {
+    position: relative;
     max-width: 34rem;
     padding: 1rem;
 }
@@ -121,19 +122,24 @@ kbd {
 }
 
 /*
- * Settings panel (collapsed by default)
+ * Settings popover (opens from the gear icon, floats over the page)
  */
 
 .settings {
     display: none;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: flex-end;
-    gap: .75rem 1.25rem;
-    margin-top: 1rem;
-    padding: .9rem 1rem;
+    position: absolute;
+    top: 3.4rem;
+    right: 1rem;
+    z-index: 50;
+    width: 13rem;
+    flex-direction: column;
+    gap: .8rem;
+    padding: 1rem;
+    background: var(--bg);
     border: 1px solid var(--line);
-    border-radius: .5rem;
+    border-radius: .6rem;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, .35);
+    text-align: left;
 }
 
 .settings.open {
@@ -143,7 +149,7 @@ kbd {
 .setting {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     gap: .2rem;
 }
 
@@ -177,16 +183,13 @@ kbd {
     box-shadow: 0 0 0 .2rem var(--hover-bg);
 }
 
-.settings #memo {
-    width: 4.5rem;
-}
 
 .settings .form-switch {
     flex-direction: row;
     align-items: center;
     gap: .5rem;
     padding-left: 0;
-    padding-bottom: .3rem;
+    margin-top: .2rem;
 }
 
 .settings .form-switch .form-check-input {
@@ -244,15 +247,16 @@ kbd {
 #turn {
     display: inline-flex;
     align-items: center;
-    gap: .5rem;
-    font-size: .95rem;
-    color: var(--text);
+    gap: .45rem;
+    font-size: .8rem;
+    color: var(--muted);
+    padding-bottom: .15rem;
 }
 
 #turnDot {
     flex-shrink: 0;
-    width: .8rem;
-    height: .8rem;
+    width: .7rem;
+    height: .7rem;
     border-radius: 50%;
     border: 1px solid rgba(128, 128, 128, .8);
 }
@@ -294,6 +298,7 @@ kbd {
 
 #myBoard {
     width: 100%;
+    aspect-ratio: 1 / 1; /* keep height while chessboard.js rebuilds, so the page doesn't jump */
     border-radius: 4px;
     overflow: hidden;
     box-shadow: var(--board-shadow);

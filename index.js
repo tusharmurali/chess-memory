@@ -45,6 +45,7 @@ const $right = $('#right')
 const $correct = $('#correct')
 const $incorrect = $('#incorrect')
 const $pgn = $('#pgn')
+const $turn = $('#turn')
 const $turnDot = $('#turnDot')
 const $turnText = $('#turnText')
 const $memoBarContainer = $('#memoBarContainer')
@@ -276,9 +277,10 @@ function getPuzzle(p) {
         orientation = game.turn() === 'b' ? 'white' : 'black'
         history = []
 
-        // show which side the user is playing
+        // show which side the user is playing while they memorize the position
         $turnDot.attr('class', orientation)
-        $turnText.text(`Find the best move for ${orientation === 'white' ? 'White' : 'Black'}`)
+        $turnText.text(`${orientation === 'white' ? 'White' : 'Black'} to move`)
+        $turn.show()
 
         $loading.hide()
         $loadingText.hide()
@@ -342,6 +344,7 @@ function hidePieces() {
     $again.show()
     $giveUp.show()
     $memoBarContainer.hide()
+    $turn.hide()
 }
 
 // Let the user end memorization early by tapping the countdown or pressing Space
@@ -411,9 +414,17 @@ $(window).on('resize', () => board?.resize())
 
 const $settings = $('#settings')
 const $settingsToggle = $('#settingsToggle')
-$settingsToggle.click(() => {
-    $settings.toggleClass('open')
-    $settingsToggle.attr('aria-expanded', $settings.hasClass('open'))
+function setSettingsOpen(open) {
+    $settings.toggleClass('open', open)
+    $settingsToggle.attr('aria-expanded', open)
+}
+$settingsToggle.click(() => setSettingsOpen(!$settings.hasClass('open')))
+// close the popover when clicking elsewhere or pressing Escape
+$(document).on('click', e => {
+    if (!$(e.target).closest('#settings, #settingsToggle').length) setSettingsOpen(false)
+})
+$(document).on('keydown', e => {
+    if (e.key === 'Escape') setSettingsOpen(false)
 })
 
 // Light/dark colour scheme, persisted to local storage
