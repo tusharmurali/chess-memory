@@ -355,6 +355,11 @@ html[data-fit] .puzzle {
     box-shadow: var(--board-shadow);
 }
 
+/* chessboard.js draws a hardcoded dark border around the board; drop it */
+#myBoard .board-b72b1 {
+    border: 0;
+}
+
 #memoBarContainer {
     visibility: hidden; /* space is always reserved so nothing below the board shifts */
     height: 4px;
