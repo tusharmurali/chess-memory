@@ -14,103 +14,94 @@
     <script src="js/chess.js"></script>
     <script src="js/chessboard-1.0.0.min.js"></script>
 </head>
-<body class="d-flex h-100 text-center text-white bg-dark">
-    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-        <header class="mb-auto">
-            <h3 class="mb-1">ChessMemory</h3>
-            <p class="subtitle">Memorize the position. When the pieces disappear, solve the puzzle from memory.</p>
-            <nav class="settings">
-                <div class="setting">
-                    <label for="theme">Pieces</label>
-                    <select id="theme" class="form-select form-select-sm">
-                        <option value="wikipedia">Default</option>
-                        <option value="alpha">Alpha</option>
-                        <option value="uscf">USCF</option>
-                    </select>
-                </div>
-                <div class="setting">
-                    <label for="rating">Rating</label>
-                    <select id="rating" class="form-select form-select-sm">
-                        <option value="600-799">600-799</option>
-                        <option value="800-999">800-999</option>
-                        <option value="1000-1199">1000-1199</option>
-                        <option value="1200-1399">1200-1399</option>
-                        <option value="1400-1599">1400-1599</option>
-                        <option value="1600-1799">1600-1799</option>
-                        <option value="1800-1999">1800-1999</option>
-                        <option value="2000-2199">2000-2199</option>
-                        <option value="2200-2399">2200-2399</option>
-                        <option value="2400-2599">2400-2599</option>
-                        <option value="2600-2799">2600-2799</option>
-                    </select>
-                </div>
-                <div class="setting">
-                    <label for="memo">Memorize (s)</label>
-                    <input id="memo" type="number" min="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57" class="form-control form-control-sm">
-                </div>
-                <div class="setting form-check form-switch">
-                    <input type="checkbox" id="easyMode" class="form-check-input" role="switch">
-                    <label for="easyMode" class="form-check-label">Easy mode</label>
-                </div>
-            </nav>
+<body class="h-100 text-center">
+    <div class="app d-flex h-100 mx-auto flex-column">
+        <header class="topbar">
+            <div class="topbar-side"></div>
+            <div class="brand">
+                <h3 class="mb-0">ChessMemory</h3>
+                <p class="subtitle">Memorize the position. When the pieces disappear, solve the puzzle from memory.</p>
+            </div>
+            <div class="topbar-side topbar-actions">
+                <button id="schemeToggle" type="button" class="icon-btn" aria-label="Toggle light or dark mode"><i class="bi bi-sun"></i></button>
+                <button id="settingsToggle" type="button" class="icon-btn" aria-label="Settings" aria-expanded="false"><i class="bi bi-gear"></i></button>
+            </div>
         </header>
-        <main class="px-3">
-            <div class="row">
-                <div class="col">
-                    <div class="d-flex flex-column align-items-center justify-content-center">
-                        <div class="row">
-                            <div class="spinner-border text-secondary" id="loading" role="status" style="width: 4rem; height: 4rem;"></div>
-                        </div>
-                        <div class="row" id="loadingText">
-                            <strong>Loading puzzles...</strong>
-                        </div>
-                    </div>
-                    <div id="promotion-dialog" style="position: absolute; z-index: 99">
-                        <ol id="promote-to">
-                            <li class="ui-state-default"><span class="piece-name">q</span><img class="promotion-piece-q promotion-piece" /></li>
-                            <li class="ui-state-default"><span class="piece-name">r</span><img class="promotion-piece-r promotion-piece" /></li>
-                            <li class="ui-state-default"><span class="piece-name">n</span><img class="promotion-piece-n promotion-piece" /></li>
-                            <li class="ui-state-default"><span class="piece-name">b</span><img class="promotion-piece-b promotion-piece" /></li>
-                        </ol>
-                    </div>
-                    <div id="myBoard" class="d-flex justify-content-center"></div>
-                    <div id="memoBarContainer"><div id="memoBar"></div></div>
-                    <div class="d-flex flex-row justify-content-between align-items-center mt-2">
-                        <button id="left" type="button" onclick="document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 37 }))" class="btn btn-sm nav-arrow fw-bold" aria-label="Previous move"><i class="bi bi-chevron-left"></i></button>
-                        <div id="pgn"></div>
-                        <button id="right" type="button" onclick="document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 39 }))" class="btn btn-sm nav-arrow fw-bold" aria-label="Next move"><i class="bi bi-chevron-right"></i></button>
-                    </div>
-                </div>
-                <div class="w-100 info-divider"></div>
-                <div class="col info-col align-self-center">
-                    <div id="turn"><span id="turnDot"></span><span id="turnText"></span></div>
-                    <div id="countdownContainer">
-                        <div class="countdown-label">Memorize</div>
-                        <h1 id="countdown" class="text-white mb-1"></h1>
-                        <div class="countdown-skip"><span>tap or <kbd>Space</kbd></span> <span>to skip</span></div>
-                    </div>
-                    <div class="d-flex info-display">
-                        <h3 id="correct" class="text-success mb-3">
-                            <i class="bi bi-check" style="font-size: 50px"></i>
-                            <br>
-                            Correct!
-                        </h3>
-                        <h3 id="incorrect" class="text-danger mb-3">
-                            <i class="bi bi-x" style="font-size: 50px"></i>
-                            <br>
-                            Incorrect
-                        </h3>
-                        <button id="again" type="button" class="btn btn-action"><i class="bi bi-eye"></i> Show again</button>
-                        <button id="giveUp" type="button" class="btn btn-action">Give Up</button>
-                        <button id="retry" type="button" class="btn btn-action">Retry</button>
-                        <button id="next" type="button" class="btn btn-action btn-action-primary">Next</button>
-                    </div>
-                    <div id="shortcutHint" class="shortcut-hint"><span><kbd>Enter</kbd> next</span> <span><kbd>R</kbd> retry</span></div>
+        <nav id="settings" class="settings">
+            <div class="setting">
+                <label for="theme">Pieces</label>
+                <select id="theme" class="form-select form-select-sm">
+                    <option value="wikipedia">Default</option>
+                    <option value="alpha">Alpha</option>
+                    <option value="uscf">USCF</option>
+                </select>
+            </div>
+            <div class="setting">
+                <label for="rating">Rating</label>
+                <select id="rating" class="form-select form-select-sm">
+                    <option value="600-799">600-799</option>
+                    <option value="800-999">800-999</option>
+                    <option value="1000-1199">1000-1199</option>
+                    <option value="1200-1399">1200-1399</option>
+                    <option value="1400-1599">1400-1599</option>
+                    <option value="1600-1799">1600-1799</option>
+                    <option value="1800-1999">1800-1999</option>
+                    <option value="2000-2199">2000-2199</option>
+                    <option value="2200-2399">2200-2399</option>
+                    <option value="2400-2599">2400-2599</option>
+                    <option value="2600-2799">2600-2799</option>
+                </select>
+            </div>
+            <div class="setting">
+                <label for="memo">Memorize (s)</label>
+                <input id="memo" type="number" min="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57" class="form-control form-control-sm">
+            </div>
+            <div class="setting form-check form-switch">
+                <input type="checkbox" id="easyMode" class="form-check-input" role="switch">
+                <label for="easyMode" class="form-check-label">Easy mode</label>
+            </div>
+        </nav>
+        <main class="puzzle">
+            <div class="loading">
+                <div class="spinner-border" id="loading" role="status"></div>
+                <div id="loadingText">Loading puzzles...</div>
+            </div>
+            <div id="promotion-dialog" style="position: absolute; z-index: 99">
+                <ol id="promote-to">
+                    <li class="ui-state-default"><span class="piece-name">q</span><img class="promotion-piece-q promotion-piece" /></li>
+                    <li class="ui-state-default"><span class="piece-name">r</span><img class="promotion-piece-r promotion-piece" /></li>
+                    <li class="ui-state-default"><span class="piece-name">n</span><img class="promotion-piece-n promotion-piece" /></li>
+                    <li class="ui-state-default"><span class="piece-name">b</span><img class="promotion-piece-b promotion-piece" /></li>
+                </ol>
+            </div>
+            <div class="status-row">
+                <div id="turn"><span id="turnDot"></span><span id="turnText"></span></div>
+                <div id="countdownContainer">
+                    <div class="countdown-main"><span class="countdown-label">Memorize</span><span id="countdown"></span></div>
+                    <div class="countdown-skip">tap or <kbd>Space</kbd> to skip</div>
                 </div>
             </div>
+            <div id="myBoard"></div>
+            <div id="memoBarContainer"><div id="memoBar"></div></div>
+            <div class="move-row">
+                <button id="left" type="button" onclick="document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 37 }))" class="btn btn-sm nav-arrow" aria-label="Previous move"><i class="bi bi-chevron-left"></i></button>
+                <div id="pgn"></div>
+                <button id="right" type="button" onclick="document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: 39 }))" class="btn btn-sm nav-arrow" aria-label="Next move"><i class="bi bi-chevron-right"></i></button>
+            </div>
+            <div class="actions">
+                <div id="correct" class="result result-correct"><i class="bi bi-check-circle-fill"></i> Correct!</div>
+                <div id="incorrect" class="result result-incorrect"><i class="bi bi-x-circle-fill"></i> Incorrect</div>
+                <div class="info-display">
+                    <button id="again" type="button" class="btn btn-action"><i class="bi bi-eye"></i> Show again</button>
+                    <button id="giveUp" type="button" class="btn btn-action">Give up</button>
+                    <button id="retry" type="button" class="btn btn-action">Retry</button>
+                    <button id="next" type="button" class="btn btn-action btn-action-primary">Next</button>
+                </div>
+                <div id="shortcutHint" class="shortcut-hint"><span><kbd>Enter</kbd> next</span> <span><kbd>R</kbd> retry</span></div>
+            </div>
         </main>
-        <footer class="mt-auto text-white-50">
-            Puzzles by <a href="https://lichess.org" target="_blank" class="text-white">lichess.org</a>. Check out the <a href="https://github.com/tusharmurali/chess-memory" target="_blank" class="text-white">GitHub</a>.
+        <footer class="mt-auto">
+            Puzzles by <a href="https://lichess.org" target="_blank">lichess.org</a>. Check out the <a href="https://github.com/tusharmurali/chess-memory" target="_blank">GitHub</a>.
         </footer>
         <script src="index.js"></script>
     </div>

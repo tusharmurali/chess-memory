@@ -407,6 +407,29 @@ $board.on('scroll touchmove touchend touchstart contextmenu', event => event.pre
 
 $(window).on('resize', () => board?.resize())
 
+// Settings panel toggle
+
+const $settings = $('#settings')
+const $settingsToggle = $('#settingsToggle')
+$settingsToggle.click(() => {
+    $settings.toggleClass('open')
+    $settingsToggle.attr('aria-expanded', $settings.hasClass('open'))
+})
+
+// Light/dark colour scheme, persisted to local storage
+
+const $schemeToggle = $('#schemeToggle')
+function applyScheme(scheme) {
+    document.documentElement.dataset.scheme = scheme
+    $schemeToggle.find('i').attr('class', scheme === 'light' ? 'bi bi-moon-stars' : 'bi bi-sun')
+}
+applyScheme(localStorage.getItem('scheme') ?? 'dark')
+$schemeToggle.click(() => {
+    const scheme = document.documentElement.dataset.scheme === 'light' ? 'dark' : 'light'
+    applyScheme(scheme)
+    localStorage.setItem('scheme', scheme)
+})
+
 // Persist memorization time by binding to local storage
 
 const memo = localStorage.getItem('memo')
