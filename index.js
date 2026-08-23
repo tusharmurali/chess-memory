@@ -12,6 +12,14 @@ let history = []
 
 const moveSound = new Audio('move.mp3')
 const captureSound = new Audio('capture.mp3')
+
+// Play the sound for a move. Rewinds first so back-to-back moves each make a sound
+// (play() is a no-op on an already-playing element), and ignores autoplay rejections.
+function playMoveSound(move) {
+    const sound = move.captured ? captureSound : moveSound
+    sound.currentTime = 0
+    sound.play().catch(() => {})
+}
 const squareClass = 'square-55d63'
 const whiteSquareGrey = '#a9a9a9'
 const blackSquareGrey = '#696969'
@@ -114,8 +122,7 @@ function onDrop(source, target) {
         return 'snapback'
     }
 
-    if (move.captured) captureSound.play()
-    else moveSound.play()
+    playMoveSound(move)
 
     // incorrect move, unless it delivers checkmate (any mating move counts, including alternative promotions)
     const wrongMove = !moves[counter].includes(source + target) || (promoting && !moves[counter].endsWith(promotingTo))
@@ -183,8 +190,7 @@ function onSnapEnd() {
 
     // make the next move in the puzzle
     const move = game.move(moves[counter++], { sloppy : true })
-    if (move.captured) captureSound.play()
-    else moveSound.play()
+    playMoveSound(move)
 
     highlightMove(move)
     board.position(game.fen())
@@ -286,8 +292,7 @@ function getPuzzle(p) {
 
         // make first move of the puzzle
         const move = game.move(moves[0], { sloppy: true })
-        if (move.captured) captureSound.play()
-        else moveSound.play()
+        playMoveSound(move)
         counter = 1
 
         highlightMove(move)
@@ -345,8 +350,7 @@ function showSolution(movesToNow) {
         timeouts[i] = setTimeout(() => {
             const move = game.move(moves[i], { sloppy : true })
             board.position(game.fen())
-            if (move.captured) captureSound.play()
-            else moveSound.play()
+            playMoveSound(move)
             updateStatus(movesToNow)
         }, (i - counter + 1) * 1000)
     }
